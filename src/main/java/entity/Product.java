@@ -6,6 +6,7 @@ public class Product {
 
     private String name;
     private double price;
+    private Integer productid;
     private String imageUrl;
     private User seller;
     private String category;
@@ -13,11 +14,13 @@ public class Product {
     private ArrayList<Integer> scores;
 
 
-    public Product(String name, double price, String imageUrl, User seller, String category) {
+    public Product(String name, double price, Integer productid, String imageUrl, User seller, String category) {
         if (name.isEmpty()) {throw new IllegalArgumentException("Product name cannot be empty");}
         this.name = name;
         if (price < 0) {throw new IllegalArgumentException("Product price cannot be negative");}
         this.price = price;
+        if  (productid == null) {throw new IllegalArgumentException("Product productid cannot be null");}
+        this.productid = productid;
         if (imageUrl.isEmpty()) {throw new IllegalArgumentException("Product image url cannot be empty");}
         this.imageUrl = imageUrl;
         this.seller = seller;
@@ -35,6 +38,9 @@ public class Product {
     public void setPrice(double price) {
         if (price < 0 ) { throw new IllegalArgumentException("Product price cannot be negative");}
         this.price = price;
+    }
+    public Integer getProductid() {
+        return productid;
     }
     public String getImageUrl() {
         return imageUrl;
