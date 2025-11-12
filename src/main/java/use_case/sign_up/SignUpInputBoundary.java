@@ -8,5 +8,5 @@ public interface SignUpInputBoundary {
      * Executes the signup use case using the input data
      * @param inputData the formatted input data needed for the execution of the signup use case
      * */
-    void execute(SignUpInputData inputData);
+    public void execute(SignUpInputData inputData);
 }
