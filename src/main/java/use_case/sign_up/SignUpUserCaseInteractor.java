@@ -21,17 +21,16 @@ public class SignUpUserCaseInteractor implements SignUpInputBoundary{
         User oldUser = dataAccess.getUserByUsername(username);
         if (oldUser != null) {
             SignUpOutputData outputData = new SignUpOutputData("An user with the same username exists, try to login!");
-            signUpPresenter.show(outputData);
-
+            signUpPresenter.showError(outputData);
         } else {
             try {
                 User newUser = new User(username, password, email, billingAddress);
                 dataAccess.createUser(newUser);
-
+                SignUpOutputData outputData = new SignUpOutputData(User);
+                signUpPresenter.showSuccess(outputData);
             } catch (IllegalArgumentException e) {
                 SignUpOutputData outputData = new SignUpOutputData(e.getMessage());
-                signUpPresenter.show(outputData);
-
+                signUpPresenter.showError(outputData);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
