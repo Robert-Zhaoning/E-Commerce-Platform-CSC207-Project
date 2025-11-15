@@ -7,6 +7,13 @@ public class AddToCartInteractor implements AddToCartInputBoundary {
     private final AddToCartOutputBoundary userPresenter;
 
 
+    public AddToCartInteractor(AddToCartUserDataAccessInterface userDataAccessObject,
+                               AddToCartOutputBoundary userPresenter)
+    {
+        this.userDataAccessObject = userDataAccessObject;
+        this.userPresenter = userPresenter;
+    }
+}
     @Override
     public void execute(AddToCartInputData addToCartInputData) {}
 }
