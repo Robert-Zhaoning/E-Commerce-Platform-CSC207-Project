@@ -1,8 +1,5 @@
 package interface_adapter.sign_up;
 
-import entity.User;
-import use_case.sign_up.SignUpInputBoundary;
-import use_case.sign_up.SignUpInputData;
 import use_case.sign_up.SignUpOutputBoundary;
 
 /**
