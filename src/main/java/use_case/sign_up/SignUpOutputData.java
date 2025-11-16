@@ -3,7 +3,7 @@ package use_case.sign_up;
 import entity.User;
 
 /**
- * This class contains the formatted output data for the execution of the signup presenter
+ * This class contains the formatted output data for the execution of the SignUpPresenter
  * SignUpOutputData contains a user or an error.
  * */
 public class SignUpOutputData {
