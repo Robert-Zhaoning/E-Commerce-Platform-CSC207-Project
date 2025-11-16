@@ -6,27 +6,25 @@ import use_case.sign_up.SignUpInputData;
 import use_case.sign_up.SignUpOutputBoundary;
 
 /**
- * This class on wrap
  * */
 public class SignUpPresenter implements SignUpOutputBoundary{
-    private User user;
-    private String error;
     private SignUpViewModel signUpViewModel;
     private SignUpState signUpState;
+
     public SignUpPresenter(){
-        this.user = null;
-        this.error = null;
+        this.signUpViewModel = new SignUpViewModel();
+        this.signUpState = new SignUpState();
     }
 
     public void updateSuccess(SignUpOutputData outputData){
-        this.signUpState = new SignUpState();
         this.signUpState.setState("Success", outputData.getUser());
-        this.signUpViewModel = new SignUpViewModel(signUpState);
+        this.signUpViewModel.setState(signUpState);
+        this.signUpViewModel.firePropertyChange("SignUpSuccess");
     }
 
     public void updateFailure(SignUpOutputData outputData) {
-        this.signUpState = new SignUpState();
         this.signUpState.setState("Failure", outputData.getError());
-        this.signUpViewModel = new SignUpViewModel(signUpState);
+        this.signUpViewModel.setState(signUpState);
+        this.signUpViewModel.firePropertyChange("SignUpFailure");
     }
 }
