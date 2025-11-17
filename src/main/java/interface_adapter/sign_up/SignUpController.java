@@ -5,7 +5,7 @@ import use_case.sign_up.SignUpInputData;
 
 /**
  * This is controller class for the signup use case.
- * SignUpController contains SignUpInteractor
+ * SignUpController contains SignUpInteractor.
  * */
 public class SignUpController {
     private SignUpInputBoundary signUpInteractor;
