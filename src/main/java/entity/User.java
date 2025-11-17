@@ -12,6 +12,7 @@ public class User {
     private String email;
     private int hashedPassword;
     private double balance;
+    private int pointsBalance;
     private List<String> billingAddresses;
     private List<String> previousPurchasesCategories;
     private Cart cart;
@@ -38,6 +39,7 @@ public class User {
         this.billingAddresses.add(billingAddress);
 
         this.balance = 0;
+        this.pointsBalance = 0;
         this.previousPurchasesCategories = new ArrayList<>();
         this.cart = new Cart(this);
     }
@@ -87,6 +89,10 @@ public class User {
 
     public double getBalance(){
         return this.balance;
+    }
+
+    public int getPointsBalance(){
+        return this.pointsBalance;
     }
 
     public Cart getCart(){
@@ -143,6 +149,27 @@ public class User {
         if (amount < 0) {throw new IllegalArgumentException("The amount cannot be negative!");}
         this.balance -= amount;
     }
+
+    /**
+     * Adds an amount of points to the user's account.
+     * @param amount the amount of points to be added to the balance
+     * @throws IllegalArgumentException when the amount is negative
+     * */
+    public void addPointsBalance(int amount) throws IllegalArgumentException{
+        if (amount < 0) {throw new IllegalArgumentException("The amount cannot be negative!");}
+        this.pointsBalance += amount;
+    }
+
+    /**
+     * Adds an amount of points to the user's account.
+     * @param amount the amount of points to be added to the balance
+     * @throws IllegalArgumentException when the amount is negative
+     * */
+    public void removePointsBalance(int amount) throws IllegalArgumentException{
+        if (amount < 0) {throw new IllegalArgumentException("The amount cannot be negative!");}
+        this.pointsBalance -= amount;
+    }
+
 
     /**
      * Checks the password of the user and another password to see whether they are equal or not
