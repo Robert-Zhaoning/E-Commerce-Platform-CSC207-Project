@@ -23,6 +23,7 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
      * */
     public SignUpView(){
         this.signUpViewModel = new SignUpViewModel();
+        this.signUpViewModel.addPropertyChangeListener(this);
         JPanel usernamePanel = new JPanel();
         JLabel usernameLabel = new JLabel("Username:");
         JTextField usernameTextField = new JTextField(10);
