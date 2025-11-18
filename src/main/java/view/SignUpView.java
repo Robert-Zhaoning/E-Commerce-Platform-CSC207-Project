@@ -121,7 +121,7 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Sets the controller for the signup use case
+     * Sets the controller for the signup use case.
      * @param signUpController the controller for signup use case
      * */
     public void setController(SignUpController signUpController){
