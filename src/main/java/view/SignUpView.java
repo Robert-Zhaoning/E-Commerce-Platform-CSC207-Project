@@ -29,15 +29,13 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
     /**
      * Creates a SignUpView object for the signup use case.
      * @param signUpViewModel the view model for the signup use case
-     * @param signUpController the controller for the signup use case
      * @param viewManagerModel the view manager model for the view manager
      * @param loginViewModel the view model for the login use case
      * @param loggedInViewModel the view model for the logged in use case
      * @param loggedOutViewModel the view model for the logged out use case
      * */
-    public SignUpView(SignUpViewModel signUpViewModel, SignUpController signUpController, ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, LoggedInViewModel loggedInViewModel, LoggedOutViewModel loggedOutViewModel){
+    public SignUpView(SignUpViewModel signUpViewModel, ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, LoggedInViewModel loggedInViewModel, LoggedOutViewModel loggedOutViewModel){
         this.signUpViewModel = signUpViewModel;
-        this.signUpController = signUpController;
         this.signUpViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.loginViewModel = loginViewModel;
@@ -120,6 +118,14 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
             viewManagerModel.firePropertyChange();
         });
 
+    }
+
+    /**
+     * Sets the controller for the signup use case
+     * @param signUpController the controller for signup use case
+     * */
+    public void setController(SignUpController signUpController){
+        this.signUpController = signUpController;
     }
 
     /**
