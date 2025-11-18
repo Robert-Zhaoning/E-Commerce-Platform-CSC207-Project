@@ -1,6 +1,10 @@
 package view;
 
 import entity.User;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.logged_out.LoggedOutViewModel;
 import interface_adapter.sign_up.SignUpController;
 import interface_adapter.sign_up.SignUpViewModel;
 
@@ -16,14 +20,30 @@ import java.beans.PropertyChangeListener;
 public class SignUpView extends JPanel implements PropertyChangeListener {
     private SignUpViewModel signUpViewModel;
     private SignUpController signUpController;
+    private ViewManagerModel viewManagerModel;
+    private LoginViewModel loginViewModel;
+    private LoggedInViewModel loggedInViewModel;
+    private LoggedOutViewModel loggedOutViewModel;
     private String error = "";
 
     /**
      * Creates a SignUpView object for the signup use case.
+     * @param signUpViewModel the view model for the signup use case
+     * @param signUpController the controller for the signup use case
+     * @param viewManagerModel the view manager model for the view manager
+     * @param loginViewModel the view model for the login use case
+     * @param loggedInViewModel the view model for the logged in use case
+     * @param loggedOutViewModel the view model for the logged out use case
      * */
-    public SignUpView(){
-        this.signUpViewModel = new SignUpViewModel();
+    public SignUpView(SignUpViewModel signUpViewModel, SignUpController signUpController, ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, LoggedInViewModel loggedInViewModel, LoggedOutViewModel loggedOutViewModel){
+        this.signUpViewModel = signUpViewModel;
+        this.signUpController = signUpController;
         this.signUpViewModel.addPropertyChangeListener(this);
+        this.viewManagerModel = viewManagerModel;
+        this.loginViewModel = loginViewModel;
+        this.loggedInViewModel = loggedInViewModel;
+        this.loggedOutViewModel = loggedOutViewModel;
+
         JPanel usernamePanel = new JPanel();
         JLabel usernameLabel = new JLabel("Username:");
         JTextField usernameTextField = new JTextField(10);
@@ -57,8 +77,10 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
         JPanel buttonsPanel = new JPanel();
         JButton createButton = new JButton("Create");
         JButton loginButton = new JButton("Login");
+        JButton backButton = new JButton("Back");
         buttonsPanel.add(createButton);
         buttonsPanel.add(loginButton);
+        buttonsPanel.add(backButton);
 
         JPanel errorPanel = new JPanel();
         JLabel errorLabel = new JLabel(this.error);
@@ -82,14 +104,22 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
             String email = emailTextField.getText();
             String billingAddress = billingAddressTextField.getText();
             if (password.equals(password2)){
-                this.signUpController = new SignUpController();
                 this.signUpController.execute(username, password, email, billingAddress);
             } else {
                 this.error = "Passwords do not match!";
             }
         });
 
-        loginButton.addActionListener(event -> {new LoginView();});
+        loginButton.addActionListener(event -> {
+            viewManagerModel.setState(loginViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
+        });
+
+        backButton.addActionListener(event -> {
+            viewManagerModel.setState(loggedOutViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
+        });
+
     }
 
     /**
@@ -101,7 +131,8 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("SignUpSuccess")){
             User loggedInUser = this.signUpViewModel.getState().getSuccess();
-            new LoggedInView(loggedInUser);
+            viewManagerModel.setState(loggedOutViewModel.getViewName());
+            viewManagerModel.firePropertyChange();
         } else if (evt.getPropertyName().equals("SgnUpFailure")){
             String error = this.signUpViewModel.getState().getFailure();
             this.error = error;

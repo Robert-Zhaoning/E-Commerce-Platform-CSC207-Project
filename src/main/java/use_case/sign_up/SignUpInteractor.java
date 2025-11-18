@@ -14,10 +14,12 @@ public class SignUpInteractor implements SignUpInputBoundary{
 
     /**
      * Creates the SignUpInteractor object for the signup use case
+     * @param signUpPresenter the presenter for the signup use case
+     * @param dataAccess the data access object
      * */
-    public SignUpInteractor(){
-        this.signUpPresenter = new SignUpPresenter();
-        this.dataAccess = new DataAccess();
+    public SignUpInteractor(SignUpOutputBoundary signUpPresenter, SignUpDataAccessInterface dataAccess){
+        this.signUpPresenter = signUpPresenter;
+        this.dataAccess = dataAccess;
     }
 
     /**

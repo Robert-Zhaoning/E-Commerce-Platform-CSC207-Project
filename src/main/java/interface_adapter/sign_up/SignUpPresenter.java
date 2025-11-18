@@ -13,10 +13,12 @@ public class SignUpPresenter implements SignUpOutputBoundary{
 
     /**
      * Creates a SignUpPresenter object to unwrap the formatted output data of SignUpInteractor.
+     * @param signUpViewModel the view model for signup use case
+     * @param signUpState the state for the signup use case
      * */
-    public SignUpPresenter(){
-        this.signUpViewModel = new SignUpViewModel();
-        this.signUpState = new SignUpState();
+    public SignUpPresenter(SignUpViewModel signUpViewModel, SignUpState signUpState){
+        this.signUpViewModel = signUpViewModel;
+        this.signUpState = signUpState;
     }
 
     /**

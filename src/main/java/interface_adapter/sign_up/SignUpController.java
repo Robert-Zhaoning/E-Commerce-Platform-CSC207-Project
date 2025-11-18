@@ -13,9 +13,10 @@ public class SignUpController {
 
     /**
      * Creates SignUpController object for the signup use case
+     * @param signUpInteractor the interactor fo the signup use case
      * */
-    public SignUpController(){
-        this.signUpInteractor = new SignUpInteractor();
+    public SignUpController(SignUpInputBoundary signUpInteractor){
+        this.signUpInteractor = signUpInteractor;
     }
 
     /**
