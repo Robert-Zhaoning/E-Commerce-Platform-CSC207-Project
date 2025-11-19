@@ -6,6 +6,8 @@ import interface_adapter.sign_up.SignUpViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -79,22 +81,37 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
         mainPanel.add(errorPanel);
         mainPanel.add(buttonsPanel);
 
-        createButton.addActionListener(event -> {
-            String username = usernameTextField.getText();
-            String password = passwordTextField.getText();
-            String password2 = password2TextField.getText();
-            String email = emailTextField.getText();
-            String billingAddress = billingAddressTextField.getText();
-            if (password.equals(password2)){
-                this.signUpController.execute(username, password, email, billingAddress);
-            } else {
-                this.error = "Passwords do not match!";
+        createButton.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String username = usernameTextField.getText();
+                    String password = passwordTextField.getText();
+                    String password2 = password2TextField.getText();
+                    String email = emailTextField.getText();
+                    String billingAddress = billingAddressTextField.getText();
+                    if (password.equals(password2)){
+                        signUpController.execute(username, password, email, billingAddress);
+                    } else {
+                        error = "Passwords do not match!";
+                    }
+                }
+            }
+        );
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                signUpController.switchToLoginView();
             }
         });
 
-        loginButton.addActionListener(event -> this.signUpController.switchToLoginView());
-
-        backButton.addActionListener(event -> this.signUpController.switchToLoggedOutView());
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                signUpController.switchToLoggedOutView();
+            }
+        });
 
     }
 
