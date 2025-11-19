@@ -13,9 +13,10 @@ import java.beans.PropertyChangeListener;
 
 /**
  * This class creates the view for the signup use case.
- * It contains a SignUpViewModel and a SignUpController and a string error.
+ * It contains a view name, a SignUpViewModel and a SignUpController and a string error.
  * */
 public class SignUpView extends JPanel implements PropertyChangeListener {
+    private final String signUpViewName = "sign up";
     private SignUpViewModel signUpViewModel;
     private SignUpController signUpController;
     private String error = "";
@@ -137,5 +138,9 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
             String error = this.signUpViewModel.getState().getFailure();
             this.error = error;
         }
+    }
+
+    public String getViewName(){
+        return this.signUpViewName;
     }
 }
