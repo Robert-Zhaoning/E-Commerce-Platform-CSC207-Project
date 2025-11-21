@@ -1,6 +1,7 @@
 package use_case.sign_up;
 
 import entity.User;
+import interface_adapter.sign_up.SignUpPresenter;
 
 /**
  * This class is the interactor for the signup use case

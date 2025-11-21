@@ -11,6 +11,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import interface_adapter.sign_up.SignUpViewModel;
+import interface_adapter.sign_up.SignUpController;
+
+
 /**
  * This class creates the view for the signup use case.
  * It contains a view name, a SignUpViewModel and a SignUpController and a string error.
@@ -30,31 +34,31 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
         this.signUpViewModel.addPropertyChangeListener(this);
 
         JPanel usernamePanel = new JPanel();
-        JLabel usernameLabel = new JLabel("Username:");
+        JLabel usernameLabel = new JLabel(SignUpViewModel.USERNAME_LABEL);
         JTextField usernameTextField = new JTextField(10);
         usernamePanel.add(usernameLabel);
         usernamePanel.add(usernameTextField);
 
         JPanel passwordPanel = new JPanel();
-        JLabel passwordLabel = new JLabel("Password:");
+        JLabel passwordLabel = new JLabel(SignUpViewModel.PASSWORD_LABEL);
         JTextField passwordTextField = new JTextField(10);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordTextField);
 
         JPanel password2Panel = new JPanel();
-        JLabel password2Label = new JLabel("Confirm Password:");
+        JLabel password2Label = new JLabel(SignUpViewModel.PASSWORD2_LABEL);
         JTextField password2TextField = new JTextField(10);
         password2Panel.add(password2Label);
         password2Panel.add(password2TextField);
 
         JPanel emailPanel = new JPanel();
-        JLabel emailLabel = new JLabel("Email:");
+        JLabel emailLabel = new JLabel(SignUpViewModel.EMAIL_LABEL);
         JTextField emailTextField = new JTextField(10);
         emailPanel.add(emailLabel);
         emailPanel.add(emailTextField);
 
         JPanel billingAddressPanel = new JPanel();
-        JLabel billingAddressLabel = new JLabel("Billing Address:");
+        JLabel billingAddressLabel = new JLabel(SignUpViewModel.BILLING_ADDRESS_LABEL);
         JTextField billingAddressTextField = new JTextField(10);
         billingAddressPanel.add(billingAddressLabel);
         billingAddressPanel.add(billingAddressTextField);
@@ -69,7 +73,7 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
 
         JPanel errorPanel = new JPanel();
         JLabel errorLabel = new JLabel(this.error);
-        errorLabel.setForeground(new Color(255,0,0));
+        errorLabel.setForeground(new Color(255, 0, 0));
         errorPanel.add(errorLabel);
 
         JPanel mainPanel = new JPanel();
