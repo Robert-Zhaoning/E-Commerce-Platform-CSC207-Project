@@ -3,6 +3,7 @@ package interface_adapter.manage_address;
 import entity.Address;
 import use_case.manage_address.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,9 +21,15 @@ public class ManageAddressPresenter implements
         this.viewModel = viewModel;
     }
 
+    // ========== Add Address Success ==========
     @Override
     public void prepareSuccessView(AddAddressOutputData outputData) {
-        updateAddresses(outputData.getUsername(), outputData.getAddresses(), null, "Address added.");
+        updateStateFromUseCase(
+                outputData.getUsername(),
+                outputData.getAddresses(),
+                null,
+                "Address added."
+        );
     }
 
     @Override
@@ -40,17 +47,15 @@ public class ManageAddressPresenter implements
         viewModel.setState(state);
     }
 
-    @Override
-    public void prepareSuccessView(EditAddressOutputData outputData) {
-        updateAddresses(outputData.getUsername(), outputData.getAddresses(), null, "Address updated.");
-    }
 
     @Override
-    public void prepareFailView(Map<String, String> errors) {
-        ManageAddressState state = viewModel.getState();
-        state.setFieldErrors(errors);
-        state.setMessage("Validation errors.");
-        viewModel.setState(state);
+    public void prepareSuccessView(EditAddressOutputData outputData) {
+        updateStateFromUseCase(
+                outputData.getUsername(),
+                outputData.getAddresses(),
+                null,
+                "Address updated."
+        );
     }
 
     @Override
@@ -60,20 +65,42 @@ public class ManageAddressPresenter implements
         viewModel.setState(state);
     }
 
+
     @Override
     public void prepareSuccessView(DeleteAddressOutputData outputData) {
+
+        // Delete Use Case 不会返回地址列表，所以 View 只更新 message
         ManageAddressState state = viewModel.getState();
         state.setMessage("Address deleted: " + outputData.getDeletedAddressId());
+        state.setFieldErrors(null); // clear old errors
         viewModel.setState(state);
     }
 
-    private void updateAddresses(String username, List<Address> addresses,
-                                 Map<String, String> errors, String message) {
-        ManageAddressState state = viewModel.getState();
-        state.setUsername(username);
-        state.setAddresses(addresses);
-        state.setFieldErrors(errors);
-        state.setMessage(message);
-        viewModel.setState(state);
+
+    private void updateStateFromUseCase(String username,
+                                        List<Address> addresses,
+                                        Map<String, String> errors,
+                                        String message) {
+
+        ManageAddressState newState = new ManageAddressState();
+
+        newState.setUsername(username);
+
+        List<String> ids = new ArrayList<>();
+        List<String> displayTexts = new ArrayList<>();
+
+        for (Address a : addresses) {
+            ids.add(a.getLine1() + a.getPostalCode());
+
+            displayTexts.add(a.toSingleLine());
+        }
+
+        newState.setAddressIds(ids);
+        newState.setDisplayAddresses(displayTexts);
+
+        newState.setFieldErrors(errors);
+        newState.setMessage(message);
+
+        viewModel.setState(newState);
     }
 }
