@@ -38,6 +38,15 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
         usernamePanel.add(usernameLabel);
         usernamePanel.add(usernameTextField);
 
+        JPanel passwordRequirementPanel = new JPanel();
+        JLabel passwordRequirementLabel = new JLabel("The acceptable password has more than 10 characters\n, " +
+                "does not include username and email,\n" +
+                "it has no weak sequences of letters and numbers,\n" +
+                "it should have numbers,\n" +
+                "it should have upper and lower case letters,\n" +
+                "and it should have special characters.");
+        passwordRequirementPanel.add(passwordRequirementLabel);
+
         JPanel passwordPanel = new JPanel();
         JLabel passwordLabel = new JLabel(SignUpViewModel.PASSWORD_LABEL);
         JTextField passwordTextField = new JTextField(10);
@@ -78,6 +87,7 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(usernamePanel);
         mainPanel.add(passwordPanel);
+        mainPanel.add(passwordRequirementPanel);
         mainPanel.add(password2Panel);
         mainPanel.add(emailPanel);
         mainPanel.add(billingAddressPanel);
