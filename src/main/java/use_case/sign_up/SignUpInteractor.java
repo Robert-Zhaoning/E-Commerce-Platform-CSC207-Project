@@ -1,5 +1,6 @@
 package use_case.sign_up;
 
+import entity.Address;
 import entity.User;
 import interface_adapter.sign_up.SignUpPresenter;
 
@@ -42,8 +43,7 @@ public class SignUpInteractor implements SignUpInputBoundary{
         // if not try to sign up the new user
         } else {
             try {
-                Address billingAddressObject = new Address(billingAddress);
-                User newUser = new User(username, password, email, billingAddressObject);
+                User newUser = new User(username, password, email, billingAddress);
                 dataAccess.createUser(newUser);
                 SignUpOutputData outputData = new SignUpOutputData(newUser);
                 signUpPresenter.updateSuccess(outputData);

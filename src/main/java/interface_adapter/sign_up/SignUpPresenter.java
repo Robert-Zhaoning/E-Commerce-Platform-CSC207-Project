@@ -40,7 +40,7 @@ public class SignUpPresenter implements SignUpOutputBoundary{
      * @param outputData the output data of the SignUpInteractor
      * */
     public void updateSuccess(SignUpOutputData outputData){
-        this.signUpState.setSuccess(outputData.getUser());
+        this.signUpState.setSuccess(outputData.getUser().getUsername());
         this.signUpViewModel.setState(signUpState);
         this.signUpViewModel.firePropertyChange("SignUpSuccess");
     }

@@ -26,7 +26,7 @@ public class SignUpController {
      * @param email the email of the user
      * @param billingAddress the initial billing address of the user
      * */
-    public void signUp (String username, String password, String email, String billingAddress){
+    public void execute(String username, String password, String email, String billingAddress){
         SignUpInputData inputData = new SignUpInputData(username, password, email, billingAddress);
         this.signUpInteractor.execute(inputData);
     }
@@ -50,9 +50,5 @@ public class SignUpController {
      * */
     public void switchToLoggedInView(){
         this.signUpInteractor.switchToLoggedInView();
-    }
-
-    public void switchToLoginView(){
-        signUpInteractor.switchToLoginView();
     }
 }

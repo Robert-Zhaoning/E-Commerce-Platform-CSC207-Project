@@ -20,7 +20,7 @@ import interface_adapter.sign_up.SignUpController;
  * It contains a view name, a SignUpViewModel and a SignUpController and a string error.
  * */
 public class SignUpView extends JPanel implements PropertyChangeListener {
-    private final String signUpViewName = "sign up";
+    private final String signUpViewName = "Sign up";
     private SignUpViewModel signUpViewModel;
     private SignUpController signUpController;
     private String error = "";
@@ -136,7 +136,6 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("SignUpSuccess")){
-            User loggedInUser = this.signUpViewModel.getState().getSuccess();
             this.signUpController.switchToLoggedInView();
         } else if (evt.getPropertyName().equals("SgnUpFailure")){
             String error = this.signUpViewModel.getState().getFailure();
