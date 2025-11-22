@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.util.*;
 import java.util.Map;
 
 import entity.*;
@@ -18,12 +18,12 @@ public class CheckoutOutputData {
     private final String username;
     private final String email;
     private final String billingAddress;
-    private final List cartItems;
+    private final List<entity.CartItemDisplay> cartItems;
     private final double totalPrice;
     private final int totalItems;
 
     public CheckoutOutputData(String username, String email, String billingAddress,
-                              List cartItems, double totalPrice, int totalItems) {
+                              List<entity.CartItemDisplay> cartItems, double totalPrice, int totalItems) {
         this.username = username;
         this.email = email;
         this.billingAddress = billingAddress;
@@ -36,7 +36,7 @@ public class CheckoutOutputData {
     public String getUsername() { return username; }
     public String getEmail() { return email; }
     public String getBillingAddress() { return billingAddress; }
-    public List getCartItems() { return cartItems; }
+    public List<entity.CartItemDisplay> getCartItems() { return cartItems; }
     public double getTotalPrice() { return totalPrice; }
     public int getTotalItems() { return totalItems; }
 }
