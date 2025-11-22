@@ -2,6 +2,10 @@ package use_case.checkout;
 
 import entity.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class CheckoutInteractor implements CheckoutInputBoundary {
     private final CheckoutDataAccessInterface dataAccess;
     private final CheckoutOutputBoundary outputBoundary;
@@ -15,17 +19,17 @@ public class CheckoutInteractor implements CheckoutInputBoundary {
     @Override
     public void execute(CheckoutInputData inputData) {
         try {
-            // 1. Get user and cart data
+            //Get user and cart data
             User user = dataAccess.getUser(inputData.getUserId());
             Cart cart = user.getCart();
 
-            // 2. Get default billing address
+            //Get default billing address
             String billingAddress = getDefaultBillingAddress(user);
 
-            // 3. Prepare cart items for display
+            //Prepare cart items for display
             List<CartItemDisplay> cartItemDisplays = prepareCartItemDisplays(cart);
 
-            // 4. Calculate totals
+            //Calculate totals
             double totalPrice = calculateTotalPrice(cart);
             int totalItems = cart.getTotalQuantity();
 
@@ -34,7 +38,7 @@ public class CheckoutInteractor implements CheckoutInputBoundary {
                     user.getUsername(),
                     user.getEmail(),
                     billingAddress,
-                    cartItemDisplays,
+                    (java.awt.List) cartItemDisplays,
                     totalPrice,
                     totalItems
             );
