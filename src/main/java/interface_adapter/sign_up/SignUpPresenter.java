@@ -41,8 +41,8 @@ public class SignUpPresenter implements SignUpOutputBoundary{
      * */
     public void updateSuccess(SignUpOutputData outputData){
         this.signUpState.setSuccess(outputData.getUser().getUsername());
+        this.signUpState.setFailure(null);
         this.signUpViewModel.setState(signUpState);
-        this.signUpViewModel.firePropertyChange("SignUpSuccess");
     }
 
     /**
@@ -50,32 +50,35 @@ public class SignUpPresenter implements SignUpOutputBoundary{
      * @param outputData the output data of the SignUpInteractor
      * */
     public void updateFailure(SignUpOutputData outputData) {
+        this.signUpState.setSuccess(null);
         this.signUpState.setFailure(outputData.getError());
         this.signUpViewModel.setState(signUpState);
-        this.signUpViewModel.firePropertyChange("SignUpFailure");
     }
 
     /**
      * Switches to log in view
      * */
     public void switchToLoginView(){
-        this.viewManagerModel.setState(loginViewModel.getName());
-        this.viewManagerModel.firePropertyChange();
+        this.signUpState.setSuccess(null);
+        this.signUpState.setFailure(null);
+        this.viewManagerModel.setActiveViewName(loginViewModel.getViewName());
     }
 
     /**
      * Switches to logged out view
      * */
     public void switchToLoggedOutView(){
-        this.viewManagerModel.setState(loggedOutViewModel.getName());
-        this.viewManagerModel.firePropertyChange();
+        this.signUpState.setSuccess(null);
+        this.signUpState.setFailure(null);
+        this.viewManagerModel.setActiveViewName(loggedOutViewModel.getViewName());
     }
 
     /**
      * Switches to logged in view
      * */
     public void switchToLoggedInView(){
-        this.viewManagerModel.setState(loggedInViewModel.getName());
-        this.viewManagerModel.firePropertyChange();
+        this.signUpState.setSuccess(null);
+        this.signUpState.setFailure(null);
+        this.viewManagerModel.setActiveViewName(loggedInViewModel.getViewName());
     }
 }

@@ -1,8 +1,7 @@
 package view;
 
 import entity.User;
-import interface_adapter.sign_up.SignUpController;
-import interface_adapter.sign_up.SignUpViewModel;
+import interface_adapter.sign_up.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -106,9 +105,7 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
 
         loginButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                signUpController.switchToLoginView();
-            }
+            public void actionPerformed(ActionEvent e) {signUpController.switchToLoginView();}
         });
 
         backButton.addActionListener(new ActionListener() {
@@ -135,11 +132,14 @@ public class SignUpView extends JPanel implements PropertyChangeListener {
      * */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("SignUpSuccess")){
+        SignUpState signUpState = (SignUpState) evt.getNewValue();
+        if (signUpState.getSuccess() != null){
             this.signUpController.switchToLoggedInView();
-        } else if (evt.getPropertyName().equals("SgnUpFailure")){
-            String error = this.signUpViewModel.getState().getFailure();
-            this.error = error;
+        }
+        if (signUpState.getFailure() != null){
+            this.error = signUpState.getFailure();
+        } else {
+            this.error = "";
         }
     }
 
