@@ -110,7 +110,6 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         HomepageState homepageState = (HomepageState) evt.getNewValue();
         if (homepageState.getUsername() != null){
-            this.homepageController.switchToHomepageView();
             JPanel usernamePanel = new JPanel();
             usernamePanel.add(new JLabel(homepageState.getUsername()));
             JPanel buttonsLayerOnePanel = new JPanel();
@@ -127,15 +126,21 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
             this.variablePanel.setLayout(new BoxLayout(this.variablePanel, BoxLayout.Y_AXIS));
             this.variablePanel.add(usernamePanel);
             this.variablePanel.add(buttonsLayerOnePanel);
-        }
-        if (signUpState.getFailure() != null){
-            this.errorLabel.setText(signUpState.getFailure());
         } else {
-            this.errorLabel.setText("");
+            JPanel welcomePanel = new JPanel();
+            welcomePanel.add(new JLabel("Hey there! Do you have an account?"));
+            JPanel buttonsLayerOnePanel = new JPanel();
+            JButton signUpButton = new JButton("Sign Up");
+            JButton loginButton = new JButton("Login");
+            buttonsLayerOnePanel.add(signUpButton);
+            buttonsLayerOnePanel.add(loginButton);
+            this.variablePanel.setLayout(new BoxLayout(this.variablePanel, BoxLayout.Y_AXIS));
+            this.variablePanel.add(welcomePanel);
+            this.variablePanel.add(buttonsLayerOnePanel);
         }
     }
 
     public String getViewName(){
-        return this.signUpViewName;
+        return this.homepageViewName;
     }
 }
