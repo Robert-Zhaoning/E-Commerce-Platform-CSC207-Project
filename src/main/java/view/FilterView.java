@@ -30,9 +30,7 @@ public class FilterView extends JPanel implements PropertyChangeListener {
 
         JPanel filterPanel = new JPanel();
         JLabel filterLabel = new JLabel("Filter:");
-        JTextField filterTextField = new JTextField(10);
         filterPanel.add(filterLabel);
-        filterPanel.add(filterTextField);
 
         JPanel filterSelectionPanel = new JPanel();
         String[] filterOptions = {"All", "Most Popular", "Most Expensive", "Least Expensive", "Food", "Kitchen", "Outside", "House", "Electric Appliances", "Bedroom", "Bathroom", "Office", "Education", "Sports", "Health"};
