@@ -58,6 +58,7 @@ public class SearchPresenter implements SearchOutputBoundary {
     public void switchToHomepageView(){
         this.homepageState.setSearchText(this.searchState.getSearchTextSuccess());
         this.homepageState.setFoundProducts(this.searchState.getFoundProductsSuccess());
+        this.homepageViewModel.setState(this.homepageState);
         this.searchState.setSuccess(null, null);
         this.searchState.setFailure(null);
         this.viewManagerModel.setActiveViewName(homepageViewModel.getViewName());
