@@ -6,7 +6,7 @@ import java.util.List;
 
 public class HomepageState {
     private String username;
-    private String filter;
+    private String searchText;
     private List<Product> products;
 
     public HomepageState(String username) {
@@ -21,12 +21,12 @@ public class HomepageState {
         this.username = username;
     }
 
-    public void setFilter(String filter) {
-        this.filter = filter;
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 
-    public String getFilter() {
-        return this.filter;
+    public String getSearchText() {
+        return this.searchText;
     }
 
     public void setProducts(List<Product> products) {
