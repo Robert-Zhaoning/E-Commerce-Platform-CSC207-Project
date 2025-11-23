@@ -16,7 +16,7 @@ import java.beans.PropertyChangeListener;
  * It contains a view name, a FilterViewModel and a FilterController.
  * */
 public class FilterView extends JPanel implements PropertyChangeListener {
-    private final String filterViewName = "sign up";
+    private final String filterViewName = "Filter";
     private FilterViewModel filterViewModel;
     private FilterController filterController;
 
