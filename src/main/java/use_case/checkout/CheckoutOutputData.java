@@ -14,7 +14,7 @@ import entity.*;
  * Order Confirmation Window that displays user details, billing address,
  * cart items, and total price
  */
-public class CheckoutOutputData {
+public class CheckoutOutputData extends JFrame {
     private final String username;
     private final String email;
     private final String billingAddress;
@@ -39,4 +39,33 @@ public class CheckoutOutputData {
     public List<entity.CartItemDisplay> getCartItems() { return cartItems; }
     public double getTotalPrice() { return totalPrice; }
     public int getTotalItems() { return totalItems; }
+
+    // Add this main method to your CheckoutOutputData class
+//    public static void main(String[] args) {
+//        // Create sample cart items
+//        List<CartItemDisplay> cartItems = Arrays.asList(
+//                new CartItemDisplay("Wireless Bluetooth Headphones", 79.99, 1, 79.99),
+//                new CartItemDisplay("USB-C Charging Cable", 19.99, 2, 39.98),
+//                new CartItemDisplay("Phone Case - Black", 14.99, 1, 14.99),
+//                new CartItemDisplay("Screen Protector", 9.99, 3, 29.97),
+//                new CartItemDisplay("Laptop Stand", 49.99, 1, 49.99)
+//        );
+//
+//        double totalPrice = 79.99 + 39.98 + 14.99 + 29.97 + 49.99; // 214.92
+//        int totalItems = 1 + 2 + 1 + 3 + 1; // 8 items
+//
+//        // Create and display the window
+//        javax.swing.SwingUtilities.invokeLater(() -> {
+//            CheckoutOutputData window = new CheckoutOutputData(
+//                    "john_doe123",
+//                    "john.doe@example.com",
+//                    "123 Main Street, Apt 4B\nNew York, NY 10001\nUnited States",
+//                    cartItems,
+//                    totalPrice,
+//                    totalItems
+//            );
+//            window.setVisible(true);
+//        });
+//    }
 }
+

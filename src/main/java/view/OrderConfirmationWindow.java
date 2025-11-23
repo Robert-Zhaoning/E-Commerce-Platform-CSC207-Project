@@ -5,11 +5,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import entity.CartItem;
+
 import entity.CartItemDisplay;
 import use_case.checkout.*;
 
 import java.awt.*;
+
 
 public class OrderConfirmationWindow extends JFrame {
     public OrderConfirmationWindow(CheckoutOutputData outputData) {
