@@ -11,13 +11,13 @@ public class OpenProductOutputData {
     private double price;
     private String productUUID;
     private String imageUrl;
-    private User seller;
+    private String seller;
     private String category;
     private double averageReviewScore;
     private int totalReviews;
 
-    public OpenProductOutputData(String username, double price, String productid, String imageUrl, User seller, String category, double averageReviewScore, int totalReviews) {
-        this.name = username;
+    public OpenProductOutputData(String name, double price, String productid, String imageUrl, String seller, String category, double averageReviewScore, int totalReviews) {
+        this.name = name;
         this.price = price;
         this.productUUID = productid;
         this.imageUrl = imageUrl;
@@ -32,7 +32,7 @@ public class OpenProductOutputData {
     public Double getPrice() {return price;}
     public String getProductUUID() {return productUUID;}
     public String getImageURl() {return imageUrl;}
-    public User getSeller() {return seller;}
+    public String getSeller() {return seller;}
     public String getCategory() {return category;}
     public double getAverageReviewScore() {return averageReviewScore;}
     public int getTotalReviews() {return totalReviews;}

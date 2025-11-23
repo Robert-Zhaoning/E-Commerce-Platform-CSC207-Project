@@ -14,7 +14,7 @@ public class OpenProductInteractor implements OpenProductInputBoundary {
     public void execute(OpenProductInputData openProductInputData) {
         int productId = openProductInputData.getProductId();
         Product showedProduct = userDataAccessObject.getProduct(productId);
-        OpenProductOutputData openProductOutputData = new OpenProductOutputData(showedProduct.getName(),showedProduct.getPrice(),showedProduct.getProductUUID(),showedProduct.getImageUrl(),showedProduct.getUser(),showedProduct.getCategory(),showedProduct.getAverageReviewScore(),showedProduct.getScores().size());
+        OpenProductOutputData openProductOutputData = new OpenProductOutputData(showedProduct.getName(),showedProduct.getPrice(),showedProduct.getProductUUID(),showedProduct.getImageUrl(),showedProduct.getUser().getUsername(),showedProduct.getCategory(),showedProduct.getAverageReviewScore(),showedProduct.getScores().size());
         userPresenter.prepareSuccessView(openProductOutputData);
     }
 }
