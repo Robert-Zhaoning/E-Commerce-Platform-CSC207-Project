@@ -9,7 +9,7 @@ import java.util.UUID;
  */
 public class Address {
 
-    private final String id;
+    private final String addressUUID;
 
     private String recipientName;
     private String line1;
@@ -26,7 +26,7 @@ public class Address {
      * Full constructor including id. This is private so that we keep the
      * public API (two constructors) almost the same as before.
      */
-    private Address(String id,
+    private Address(String addressUUID,
                     String recipientName,
                     String line1,
                     String line2,
@@ -53,7 +53,7 @@ public class Address {
             throw new IllegalArgumentException("The country cannot be empty!");
         }
 
-        this.id = id;
+        this.addressUUID = addressUUID;
 
         this.recipientName = (recipientName == null) ? "" : recipientName;
         this.line1 = line1;
@@ -77,7 +77,7 @@ public class Address {
             throw new IllegalArgumentException("The address cannot be empty!");
         }
 
-        this.id = UUID.randomUUID().toString();
+        this.addressUUID = UUID.randomUUID().toString();
 
         this.line1 = fullAddress;
         this.recipientName = "";
@@ -126,8 +126,8 @@ public class Address {
     /**
      * Returns the unique identifier of this address.
      */
-    public String getId() {
-        return id;
+    public String getAddressUUID() {
+        return this.addressUUID;
     }
 
     //Getters
