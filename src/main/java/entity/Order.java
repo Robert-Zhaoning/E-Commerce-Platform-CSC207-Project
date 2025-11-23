@@ -1,6 +1,7 @@
 package entity;
 
 public class Order {
+    private String orderUUID;
     private final User customer;
     private final Product[] products;
     private final String address;
@@ -14,6 +15,10 @@ public class Order {
         this.price = price;
     }
 
+    public String getOrderUUID() {
+        return this.orderUUID;
+    }
+    
     public User getCustomer() {
         return customer;
     }
