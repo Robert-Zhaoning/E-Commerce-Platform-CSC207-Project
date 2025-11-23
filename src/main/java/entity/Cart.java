@@ -7,9 +7,9 @@ import java.util.*;
  * Cart has its owner, and the products inside the cart
  * */
 public class Cart {
-    private String cartUUID
+    private String cartUUID;
     private final User owner;
-    private final Map<Integer, CartItem> products;
+    private final Map<String, CartItem> products;
 
     /**
      * Creates a new cart for the owner.
@@ -20,7 +20,7 @@ public class Cart {
         this.products = new HashMap<>();
     }
 
-    public String get CartUUID() {
+    public String getCartUUID() {
         return this.cartUUID;
     }
     
@@ -28,12 +28,12 @@ public class Cart {
         return owner;
     }
 
-    public Map<Integer, CartItem> getProducts() {
+    public Map<String, CartItem> getProducts() {
         return Map.copyOf(products); // makes products unmodifiable
     }
 
     public void addProduct(Product product, int quantity) {
-        int id = product.getProductid();
+        String id = product.getProductUUID();
         CartItem item = products.get(id);
         if (item == null)
             products.put(id, new CartItem(product, quantity));
@@ -42,7 +42,7 @@ public class Cart {
         }
 
     public void removeProduct(Product product, int quantity) {
-        int id = product.getProductid();
+        String id = product.getProductUUID();
         CartItem item = products.get(id);
 
         if (item == null) return;
