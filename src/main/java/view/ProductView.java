@@ -1,4 +1,122 @@
 package view;
 
-public class ProductView {
+import interface_adapter.Product.ProductController;
+import interface_adapter.Product.ProductState;
+import interface_adapter.Product.ProductViewModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.net.URL;
+
+public class ProductView extends JPanel implements PropertyChangeListener {
+
+    private final String viewName = "Product";
+    private final ProductViewModel productViewModel;
+    private ProductController productController;
+
+    private final JLabel imageLabel = new JLabel();
+    private final JLabel seller = new JLabel();
+    private final JLabel productName = new JLabel();
+    private final JLabel productPrice = new JLabel();
+    private final JLabel productRating = new JLabel();
+    private final JLabel reviewCount = new JLabel();
+    private final JLabel category = new JLabel();
+    private final JTextField quantityField = new JTextField(5);
+    private final JButton addButton = new JButton("Add");
+    private final JButton cancelButton = new JButton("Cancel");
+    private final JPanel buttonRow = new JPanel(new BorderLayout());
+
+    public ProductView(ProductViewModel viewModel) {
+        this.productViewModel = viewModel;
+        this.productViewModel.addPropertyChangeListener(this);
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setPreferredSize(new Dimension(400, 400));
+
+        JLabel title = new JLabel("Product");
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+        add(title);
+
+        add(Box.createVerticalStrut(10));
+
+        imageLabel.setPreferredSize(new Dimension(200, 200));
+        imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+        imagePanel.add(imageLabel);
+        imagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        add(imagePanel);
+
+        add(Box.createVerticalStrut(15));
+
+        add(makeLabelPanel("Name:", productName));
+        add(makeLabelPanel("Seller:", seller));
+        add(makeLabelPanel("Price:", productPrice));
+        add(makeLabelPanel("Rating:", productRating));
+        add(makeLabelPanel("Reviews:", reviewCount));
+        add(makeLabelPanel("Category:", category));
+
+        add(Box.createVerticalStrut(10));
+
+        JPanel qtyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        qtyPanel.add(new JLabel("Qty:"));
+        qtyPanel.add(quantityField);
+        add(qtyPanel);
+
+        add(Box.createVerticalStrut(10));
+        JPanel buttonRow = new JPanel(new BorderLayout());
+        buttonRow.add(addButton, BorderLayout.EAST);
+        buttonRow.add(cancelButton, BorderLayout.WEST);
+        add(buttonRow);
+    }
+
+
+
+    private JPanel makeLabelPanel(String label, JLabel value) {
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        p.add(new JLabel(label));
+        p.add(value);
+        return p;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (!"state".equals(evt.getPropertyName())) return;
+
+        ProductState state = (ProductState) evt.getNewValue();
+
+        productName.setText(state.getName());
+        seller.setText(state.getSellerName());
+        productPrice.setText(state.getPrice());
+        productRating.setText(state.getRating());
+        reviewCount.setText(state.getReviewCount());
+        category.setText(state.getCategory());
+
+        try {
+            URL url = new URL(state.getImageUrl());
+            ImageIcon icon = new ImageIcon(url);
+
+            Image scaled = icon.getImage().getScaledInstance(
+                    200, 200, Image.SCALE_SMOOTH
+            );
+            imageLabel.setIcon(new ImageIcon(scaled));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+
+    public void setController(ProductController controller) {
+        this.productController = controller;
+    }
 }
