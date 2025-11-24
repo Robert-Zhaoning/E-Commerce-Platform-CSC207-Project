@@ -1,9 +1,9 @@
 package app;
 
-import interface_adapter.HomePagLoggedIN.HomePageLoggedInViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.sign_up.SignUpViewModel;
+import interface_adapter.homepage.HomepageViewModel;
 import view.HomePageLoggedInView;
 import view.LoginView;
 import view.SignUpView;
@@ -35,7 +35,7 @@ public class AppBuilder {
     private SignUpViewModel signUpViewModel;
 
     private HomePageLoggedInView homePageLoggedInView;
-    private HomePageLoggedInViewModel homePageLoggedInViewModel;
+    private HomepageViewModel homePageLoggedInViewModel;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
