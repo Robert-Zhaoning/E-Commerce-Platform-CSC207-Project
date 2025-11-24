@@ -30,8 +30,8 @@ public class User {
      * @throws IllegalArgumentException when arguments are incorrect
      */
     public User(String username, String email, String password, String billingAddress){
-        if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("The username cannot be empty!");
+        if (username == null || username.isEmpty() || username.contains(" ")) {
+            throw new IllegalArgumentException("The username cannot be empty or contain spaces!");
         }
         this.username = username;
 
@@ -59,7 +59,7 @@ public class User {
         this.billingAddresses.add(new Address(billingAddress));
 
         // create an empty cart for this user
-        this.cart = new Cart(this);
+        this.cart = new Cart(this.getUsername());
     }
 
     /**
