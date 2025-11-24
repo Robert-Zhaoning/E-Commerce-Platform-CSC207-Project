@@ -52,6 +52,11 @@ public class Product {
         return category;
     }
     public double getAverageReviewScore() {
+        double newTotal = 0.0   ;
+        for (Integer integer : scores) {
+            newTotal += integer;
+        }
+        averageReviewScore = newTotal / scores.size();
         return averageReviewScore;
     }
     public ArrayList<Integer> getScores() {
@@ -59,11 +64,6 @@ public class Product {
     }
     public void addScore(Integer score) {
         if (score < 1 || score > 5) {throw new IllegalArgumentException("Invalid score value");}
-        scores.add(score);
-        double newTotal = 0.0   ;
-        for (Integer integer : scores) {
-            newTotal += integer;
-        }
-        averageReviewScore = newTotal / scores.size();
+        scores.add(score);   
     }
 }
