@@ -18,6 +18,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -25,7 +26,6 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 import java.io.IOException;
-
 
 public class DataAccessObject implements
     AddToCartUserDataAccessInterface,
@@ -75,7 +75,7 @@ public class DataAccessObject implements
         
         }
 
-        public Address[] getAddresses(String username) {
+        public HashSet<Address> getAddresses(String username) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                 .url(baseUrl + "/get_address?username=" + username)
@@ -83,7 +83,7 @@ public class DataAccessObject implements
             try {
                 Response response = client.newCall(request).execute();
                 JSONArray jsonArray = new JSONArray(response.body().string());
-                Address[] addresses = new Address[jsonArray.length()];
+                HashSet<Address> addresses = new HashSet<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonAddress = jsonArray.getJSONObject(i);
                     Address address = new Address(
@@ -98,7 +98,7 @@ public class DataAccessObject implements
                         jsonAddress.getBoolean("defaultBilling"),
                         jsonAddress.getBoolean("defaultShipping")
                     );
-                    addresses[i] = address;
+                    addresses.add(address);
                 }
                 return addresses;
             }
@@ -110,11 +110,16 @@ public class DataAccessObject implements
             }
         }
 
+        public boolean checkIfAddressExists(Address address) {
+            return getAddresses(address.getRecipientName()).contains(address);
+            
+        }
+
         public Cart getCart(String username) {
             return new Cart(getUser(username));
         }
 
-
+        
         /* User related methods */
     
         @Override
@@ -131,13 +136,14 @@ public class DataAccessObject implements
                     jsonBody.getString("email"), 
                     jsonBody.getInt("hashedPassword"), 
                     jsonBody.getDouble("balance"), 
-                    new ArrayList<Address>(), 
+                    new HashSet<Address>(), 
                     new ArrayList<String>(),
                     getCart(jsonBody.getString("username"))
                 );
-
-                for (int i = 0; i < jsonBody.getJSONArray("billingAddresses").length(); i++) {
-                    user.addAddress(getAddress(username)[i]);
+                if (getAddresses(username) != null) {
+                    for (Address address : getAddresses(username)) {
+                        user.addAddress(address);
+                    }
                 }
                 for (int i = 0; i < jsonBody.getJSONArray("previousPurchasesCategories").length(); i++) {
                     user.addCategory(jsonBody.getJSONArray("previousPurchasesCategories").getString(i));
@@ -160,12 +166,45 @@ public class DataAccessObject implements
 
         @Override
         public void createUser(User user) {
-            
+            OkHttpClient client = new OkHttpClient();
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("username", user.getUsername());
+                jsonBody.put("email", user.getEmail());
+                jsonBody.put("hashedPassword", user.getHashedPassword(56734822));
+                jsonBody.put("balance", user.getBalance());
+                JSONArray addressesArray = new JSONArray();
+
+                for (Address address : user.getBillingAddresses()) {
+                    postAddress(address);
+                    addressesArray.put(address.getId());
+                }
+                jsonBody.put("billingAddresses", addressesArray);
+                JSONArray categoriesArray = new JSONArray();
+                for (String category : user.getPreviousPurchasesCategories()) {
+                    categoriesArray.put(category);
+                }
+                jsonBody.put("previousPurchasesCategories", categoriesArray);
+                jsonBody.put("cartUUID", user.getCart().getCartUUID());
+
+                Request request = new Request.Builder()
+                    .url(baseUrl + "/user?=" + user.getUsername())
+                    .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
+                    .build();
+                client.newCall(request).execute();
+            }
+            catch (IOException e) {
+            }
+            catch (JSONException e) {
+            }
         }
 
         @Override
         public boolean checkUserExists(String username) {
-            
+            if (getUser(username) != null) {
+                return true;
+            }
+            return false;
         }
 
         @Override
