@@ -14,6 +14,7 @@ public class ProductState {
     private String category;
     private String rating; // format: "4.7 *"
     private String reviewCount; // format: "23 reviews"
+    private String username;
 
     public String getName(){return name;}
     public void setName(String name) {this.name = name;}
@@ -29,4 +30,6 @@ public class ProductState {
     public void setRating(String rating){this.rating = rating;}
     public String getReviewCount(){return reviewCount;}
     public void setReviewCount(String reviewCount){this.reviewCount = reviewCount;}
+    public String getUsername(){return username;}
+    public void setUsername(String username){this.username = username;}
 }

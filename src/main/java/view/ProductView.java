@@ -23,10 +23,10 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     private final JLabel productRating = new JLabel();
     private final JLabel reviewCount = new JLabel();
     private final JLabel category = new JLabel();
+    private final JLabel username = new JLabel();
     private final JTextField quantityField = new JTextField(5);
     private final JButton addButton = new JButton("Add");
     private final JButton cancelButton = new JButton("Cancel");
-    private final JPanel buttonRow = new JPanel(new BorderLayout());
 
     public ProductView(ProductViewModel viewModel) {
         this.productViewModel = viewModel;
@@ -73,6 +73,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         add(Box.createVerticalStrut(10));
         JPanel buttonRow = new JPanel(new BorderLayout());
         buttonRow.add(addButton, BorderLayout.EAST);
+        buttonRow.add(username, BorderLayout.CENTER);
         buttonRow.add(cancelButton, BorderLayout.WEST);
         add(buttonRow);
     }
@@ -98,6 +99,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         productRating.setText(state.getRating());
         reviewCount.setText(state.getReviewCount());
         category.setText(state.getCategory());
+        username.setText(state.getUsername());
 
         try {
             URL url = new URL(state.getImageUrl());
