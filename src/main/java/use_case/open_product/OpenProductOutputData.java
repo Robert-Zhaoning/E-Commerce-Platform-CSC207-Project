@@ -15,8 +15,9 @@ public class OpenProductOutputData {
     private String category;
     private double averageReviewScore;
     private int totalReviews;
+    private String username;
 
-    public OpenProductOutputData(String name, double price, String productid, String imageUrl, String seller, String category, double averageReviewScore, int totalReviews) {
+    public OpenProductOutputData(String name, double price, String productid, String imageUrl, String seller, String category, double averageReviewScore, int totalReviews, String username) {
         this.name = name;
         this.price = price;
         this.productUUID = productid;
@@ -25,6 +26,7 @@ public class OpenProductOutputData {
         this.category = category;
         this.averageReviewScore = averageReviewScore;
         this.totalReviews = totalReviews;
+        this.username = username;
 
     }
 
@@ -36,5 +38,6 @@ public class OpenProductOutputData {
     public String getCategory() {return category;}
     public double getAverageReviewScore() {return averageReviewScore;}
     public int getTotalReviews() {return totalReviews;}
+    public String username() {return username;}
 
 }

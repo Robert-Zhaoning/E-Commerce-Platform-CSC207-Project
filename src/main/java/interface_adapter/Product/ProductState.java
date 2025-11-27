@@ -8,6 +8,7 @@ import entity.Product;
  * */
 public class ProductState {
     private String name;
+    private String productid;
     private String price; // format: "$12.50"
     private String imageUrl;
     private String sellerName;
@@ -18,6 +19,8 @@ public class ProductState {
 
     public String getName(){return name;}
     public void setName(String name) {this.name = name;}
+    public String getProductid(){return productid;}
+    public void setProductid(String productid){this.productid = productid;}
     public String getPrice(){return price;}
     public void setPrice(String price){this.price = price;}
     public String getImageUrl(){return imageUrl;}

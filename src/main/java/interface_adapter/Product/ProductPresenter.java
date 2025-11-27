@@ -27,15 +27,22 @@ public class ProductPresenter implements OpenProductOutputBoundary{
         // On success, open the Product View
         ProductState productState = new ProductState();
         productState.setName(outputData.getUsername());
+        productState.setProductid(outputData.getProductUUID());
         productState.setPrice("$" + outputData.getPrice());
         productState.setImageUrl(outputData.getImageURl());
         productState.setSellerName(outputData.getSeller());
         productState.setCategory(outputData.getCategory());
         productState.setRating(String.format("%.1f *", outputData.getAverageReviewScore())); // 1 decimal point
         productState.setReviewCount(outputData.getTotalReviews() + " reviews");
+        productState.setUsername(outputData.getUsername());
         productViewModel.setState(productState);
         viewManagerModel.setState(productViewModel.getViewName());
         viewManagerModel.setActiveViewName(productViewModel.getViewName());
+    }
+    @Override
+    public void switchToHomePageView(){
+        homepageViewModel.setState(homepageViewModel.getState());
+        this.viewManagerModel.setActiveViewName(this.homepageViewModel.getViewName());
     }
 
 }

@@ -6,6 +6,8 @@ import interface_adapter.Product.ProductViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -19,6 +21,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     private final JLabel imageLabel = new JLabel();
     private final JLabel seller = new JLabel();
     private final JLabel productName = new JLabel();
+    private final JLabel productID = new JLabel();
     private final JLabel productPrice = new JLabel();
     private final JLabel productRating = new JLabel();
     private final JLabel reviewCount = new JLabel();
@@ -26,7 +29,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     private final JLabel username = new JLabel();
     private final JTextField quantityField = new JTextField(5);
     private final JButton addButton = new JButton("Add");
-    private final JButton cancelButton = new JButton("Cancel");
+    private final JButton exitButton = new JButton("Exit");
 
     public ProductView(ProductViewModel viewModel) {
         this.productViewModel = viewModel;
@@ -57,6 +60,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         add(Box.createVerticalStrut(15));
 
         add(makeLabelPanel("Name:", productName));
+        add(makeLabelPanel("ProductID:", productID));
         add(makeLabelPanel("Seller:", seller));
         add(makeLabelPanel("Price:", productPrice));
         add(makeLabelPanel("Rating:", productRating));
@@ -74,8 +78,19 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         JPanel buttonRow = new JPanel(new BorderLayout());
         buttonRow.add(addButton, BorderLayout.EAST);
         buttonRow.add(username, BorderLayout.CENTER);
-        buttonRow.add(cancelButton, BorderLayout.WEST);
+        buttonRow.add(exitButton, BorderLayout.WEST);
         add(buttonRow);
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed (ActionEvent e){
+                productController.switchToHomePageView();
+            }
+        });
+//        addButton.addActionListener(new ActionListener() {
+//            public void actionPerformed (ActionEvent e){
+//                final ProductState currentState = productViewModel.getState();
+//                addToCartController.execeute(currentState.);
+//            }
+//        });
     }
 
 
@@ -89,28 +104,29 @@ public class ProductView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!"state".equals(evt.getPropertyName())) return;
-
         ProductState state = (ProductState) evt.getNewValue();
+        if (state.getPrice() == null | state.getCategory() == null) {
+            productController.execute(state.getProductid(), state.getUsername());
+        }
+        else {
+            productName.setText(state.getName());
+            seller.setText(state.getSellerName());
+            productPrice.setText(state.getPrice());
+            productRating.setText(state.getRating());
+            reviewCount.setText(state.getReviewCount());
+            category.setText(state.getCategory());
+            username.setText(state.getUsername());
+            try {
+                URL url = new URL(state.getImageUrl());
+                ImageIcon icon = new ImageIcon(url);
 
-        productName.setText(state.getName());
-        seller.setText(state.getSellerName());
-        productPrice.setText(state.getPrice());
-        productRating.setText(state.getRating());
-        reviewCount.setText(state.getReviewCount());
-        category.setText(state.getCategory());
-        username.setText(state.getUsername());
-
-        try {
-            URL url = new URL(state.getImageUrl());
-            ImageIcon icon = new ImageIcon(url);
-
-            Image scaled = icon.getImage().getScaledInstance(
-                    200, 200, Image.SCALE_SMOOTH
-            );
-            imageLabel.setIcon(new ImageIcon(scaled));
-        } catch (Exception e) {
-            e.printStackTrace();
+                Image scaled = icon.getImage().getScaledInstance(
+                        200, 200, Image.SCALE_SMOOTH
+                );
+                imageLabel.setIcon(new ImageIcon(scaled));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -121,4 +137,4 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     public void setController(ProductController controller) {
         this.productController = controller;
     }
-}
+    }

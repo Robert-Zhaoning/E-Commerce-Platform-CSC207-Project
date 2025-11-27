@@ -16,8 +16,10 @@ public class ProductController {
      * Executes the Product Use Case.
      * @param productid the product that the user clicks on
      */
-    public void execute(Integer productid){
-        final OpenProductInputData openProductInputData = new OpenProductInputData(productid);
+    public void execute(String productid, String username){
+        final OpenProductInputData openProductInputData = new OpenProductInputData(productid, username);
         openProductUseCaseInteractor.execute(openProductInputData);
+    }
+    public void switchToHomePageView(){openProductUseCaseInteractor.switchToHomePageView();
     }
 }
