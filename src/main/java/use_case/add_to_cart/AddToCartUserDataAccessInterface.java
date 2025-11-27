@@ -11,5 +11,5 @@ public interface AddToCartUserDataAccessInterface {
      */
     User getUserData(String username);
 
-    void addToCart(User username, Integer productid, Integer quantity);
+    void addToCart(User username, String productUUID, Integer quantity);
 }
