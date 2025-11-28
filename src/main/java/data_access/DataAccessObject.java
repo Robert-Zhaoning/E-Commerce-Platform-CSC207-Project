@@ -13,11 +13,13 @@ import entity.Cart;
 import entity.Order;
 import entity.Product;
 import entity.User;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -37,9 +39,23 @@ public class DataAccessObject implements
     SearchDataAccessInterface,
     SignUpDataAccessInterface {
 
-        private final String baseUrl = "https://x8ki-letl-twmt.n7.xano.io/api:vu2PKIfe";
+        private final String URL1 = "https://xlez-ocau-8ty9.n2.xano.io/api:BftqpNiF";
+        private final String URL2 = "https://xlez-ocau-8ty9.n2.xano.io/api:vu2PKIfe";
 
         /* Helper methods */
+
+        public void deleteUser(String username) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL2 + "/user?username=" + username)
+                .delete()
+                .build();
+            try {
+                client.newCall(request).execute();
+            }
+            catch (IOException e) {
+            }
+        }
 
         /**
          * 
@@ -60,7 +76,7 @@ public class DataAccessObject implements
                 jsonBody.put("defaultBilling", address.isDefaultBilling());
                 jsonBody.put("defaultShipping", address.isDefaultShipping());
                 Request request = new Request.Builder()
-                    .url(baseUrl + "/address")
+                    .url(URL2 + "/address")
                     .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
                     .build();
                 Response response = client.newCall(request).execute();
@@ -78,7 +94,7 @@ public class DataAccessObject implements
         public HashSet<Address> getAddresses(String username) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                .url(baseUrl + "/get_address?username=" + username)
+                .url(URL2 + "/get_address?username=" + username)
                 .build();
             try {
                 Response response = client.newCall(request).execute();
@@ -115,10 +131,82 @@ public class DataAccessObject implements
             
         }
 
-        public Cart getCart(String username) {
-            return new Cart(getUser(username));
+        public Cart getCart(String cartUUID) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL2 + "/get_cart?cartUUID=" + cartUUID)
+                .build();
+            try {
+                Response response = client.newCall(request).execute();
+                JSONObject jsonBody = new JSONObject(response.body().string());
+                // System.out.println(jsonBody.toString());
+                Cart cart = new Cart(
+                    jsonBody.getString("owner"),
+                    jsonBody.getString("id")
+                );
+                JSONArray products = jsonBody.getJSONObject("products_qty").getJSONArray("products");
+                for (int i = 0; i < products.length(); i++) {
+                    cart.addProduct(
+                        getProduct(
+                            products.getJSONObject(i).getString("productUUID")
+                        ),
+                        products.getJSONObject(i).getInt("quantity")
+                    );
+                }
+                return cart;
+            }
+            catch (IOException e) {
+                return null;
+            }
+            catch (JSONException e) {
+                return null;
+            }
         }
 
+        public Cart getCartByUsername(String username) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL2 + "/get_cart_by_username?username=" + username)
+                .build();
+            try {
+                Response response = client.newCall(request).execute();
+                JSONObject jsonBody = new JSONObject(response.body().string());
+                // System.out.println(jsonBody.toString());
+                Cart cart = new Cart(
+                    jsonBody.getString("owner"),
+                    jsonBody.getString("id")
+                );
+                JSONArray products = jsonBody.getJSONObject("products_qty").getJSONArray("products");
+                for (int i = 0; i < products.length(); i++) {
+                    cart.addProduct(
+                        getProduct(
+                            products.getJSONObject(i).getString("productUUID")
+                        ),
+                        products.getJSONObject(i).getInt("quantity")
+                    );
+                }
+                return cart;
+            }
+            catch (IOException e) {
+                return null;
+            }
+            catch (JSONException e) {
+                return null;
+            }
+        }
+
+        public void deleteCart(String cartUUID) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL2 + "/cart?cartUUID=" + cartUUID)
+                .delete()
+                .build();
+            try {
+                client.newCall(request).execute();
+            }
+            catch (IOException e) {
+            }
+        }
         
         /* User related methods */
     
@@ -126,7 +214,7 @@ public class DataAccessObject implements
         public User getUser(String username) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                .url(baseUrl + "/get_user?username=" + username)
+                .url(URL2 + "/get_user?username=" + username)
                 .build();
             try {
                 Response response = client.newCall(request).execute();
@@ -138,15 +226,17 @@ public class DataAccessObject implements
                     jsonBody.getDouble("balance"), 
                     new HashSet<Address>(), 
                     new ArrayList<String>(),
-                    getCart(jsonBody.getString("username"))
+                    getCart(jsonBody.getString("cartUUID"))
                 );
                 if (getAddresses(username) != null) {
                     for (Address address : getAddresses(username)) {
                         user.addAddress(address);
                     }
                 }
-                for (int i = 0; i < jsonBody.getJSONArray("previousPurchasesCategories").length(); i++) {
-                    user.addCategory(jsonBody.getJSONArray("previousPurchasesCategories").getString(i));
+                if (jsonBody.getJSONArray("previousPurchasesCategories").length() > 0) {
+                    for (int i = 0; i < jsonBody.getJSONArray("previousPurchasesCategories").length(); i++) {
+                        user.addCategory(jsonBody.getJSONArray("previousPurchasesCategories").getString(i));
+                    }
                 }
 
                 return user;
@@ -176,7 +266,9 @@ public class DataAccessObject implements
                 JSONArray addressesArray = new JSONArray();
 
                 for (Address address : user.getBillingAddresses()) {
-                    postAddress(address);
+                    if (!checkIfAddressExists(address)) {
+                        postAddress(address);
+                    }
                     addressesArray.put(address.getId());
                 }
                 jsonBody.put("billingAddresses", addressesArray);
@@ -188,7 +280,7 @@ public class DataAccessObject implements
                 jsonBody.put("cartUUID", user.getCart().getCartUUID());
 
                 Request request = new Request.Builder()
-                    .url(baseUrl + "/user?=" + user.getUsername())
+                    .url(URL2 + "/user?=" + user.getUsername())
                     .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
                     .build();
                 client.newCall(request).execute();
@@ -219,29 +311,153 @@ public class DataAccessObject implements
 
         @Override
         public void saveUser(User user) {
-            
+            deleteUser(user.getUsername());
+            createUser(user);
         }
 
         /* Product related methods */
 
-        @Override
-        public Product getProduct(int productId) {
-            return null;
+        // @Override
+        public Product getProduct(String productUUID) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL1 + "/get_product?productUUID=" + productUUID)
+                .build();
+            // System.out.println(request.url());
+            try {
+                Response response = client.newCall(request).execute();
+                JSONObject jsonBody = new JSONObject(response.body().string());
+                // System.out.println(jsonBody.toString());
+                Product product = new Product(
+                    jsonBody.getString("name"), 
+                    jsonBody.getDouble("price"), 
+                    productUUID,
+                    jsonBody.getString("image_url"), 
+                    getUser(jsonBody.getString("seller_name")), 
+                    jsonBody.getString("category"),
+                    jsonBody.getDouble("average_review_score"),
+                    new ArrayList<Integer>()
+                );
+                for (int i = 0; i < jsonBody.getJSONArray("review_scores").length(); i++) {
+                    product.addScore(Integer.valueOf(
+                        jsonBody.getJSONArray("review_scores").getInt(i)
+                    ));
+                }
+                return product;
+            }
+            catch (IOException e) {
+                return null;
+            }
+            catch (JSONException e) {
+                return null;
+            }
         }
 
         @Override
         public List<Product> getAllProducts() {
-            
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                .url(URL1 + "/product")
+                .build();
+            try {
+                Response response = client.newCall(request).execute();
+                JSONArray jsonArray = new JSONArray(response.body().string());
+                List<Product> products = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonProduct = jsonArray.getJSONObject(i);
+                    Product product = new Product(
+                    jsonProduct.getString("name"), 
+                    jsonProduct.getDouble("price"), 
+                    jsonProduct.getString("id"),
+                    jsonProduct.getString("image_url"), 
+                    getUser(jsonProduct.getString("seller_name")), 
+                    jsonProduct.getString("category"),
+                    jsonProduct.getDouble("average_review_score"),
+                    new ArrayList<Integer>()
+                    );
+                    for (int j = 0; j < jsonProduct.getJSONArray("review_scores").length(); j++) {
+                        product.addScore(Integer.valueOf(
+                            jsonProduct.getJSONArray("review_scores").getInt(j)
+                        ));
+                    }
+                    products.add(product);
+                }
+                return products;
+            }
+            catch (IOException e) {
+                return null;
+            }
+            catch (JSONException e) {
+                return null;
+            }
         }
 
-        @Override
-        public void addToCart(User username, String productUUID, Integer quantity) {
-            
+        public void postProduct(Product product) {
+            OkHttpClient client = new OkHttpClient();
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("name", product.getName());
+                jsonBody.put("price", product.getPrice());
+                jsonBody.put("image_url", product.getImageUrl());
+                jsonBody.put("seller_name", product.getUser().getUsername());
+                jsonBody.put("category", product.getCategory());
+                jsonBody.put("average_review_score", product.getAverageReviewScore());
+                JSONArray scoresArray = new JSONArray();
+                for (Integer score : product.getScores()) {
+                    scoresArray.put(score);
+                }
+                jsonBody.put("review_scores", scoresArray);
+                Request request = new Request.Builder()
+                    .url(URL1 + "/product")
+                    .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
+                    .build();
+                client.newCall(request).execute();
+            }
+            catch (IOException e) {
+            }
+            catch (JSONException e) {
+            }
+        }
+
+        /* Cart related methods */
+
+        // @Override
+        public void addToCart(User user, String productUUID, Integer quantity) {
+            Cart cart = getCartByUsername(user.getUsername());
+            Product product = getProduct(productUUID);
+            if (cart != null && product != null) {
+                cart.addProduct(product, quantity);
+            }
+    
+            OkHttpClient client = new OkHttpClient();
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("username", user.getUsername());
+                jsonBody.put("cartUUID", cart.getCartUUID());
+                JSONArray products = new JSONArray();
+                for (String uuid : cart.getProducts().keySet()) {
+                    products.put(new JSONObject()
+                        .put("quantity", cart.getProducts().get(uuid))
+                        .put("productUUID", uuid)
+                    );
+                }
+                jsonBody.put("products_qty", new JSONObject().put("products", products));
+                Request request = new Request.Builder()
+                    .url(URL2 + "/cart")
+                    .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
+                    .build();
+                client.newCall(request).execute();
+            }
+            catch (JSONException e) {
+            }
+            catch (IOException e) {
+            }
         }
 
         @Override
         public void saveOrder(Order order) {
-            
+            // Not implemented
+            return;
         }
 
 
