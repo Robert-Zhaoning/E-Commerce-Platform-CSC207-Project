@@ -1,9 +1,12 @@
-package use_case.checkout;
+package interface_adapter.checkout;
 
 import entity.CartItemDisplay;
 import java.util.List;
 
-public class CheckoutOutputData {
+/**
+ * State object that holds the current state of the checkout process
+ */
+public class CheckoutState {
     private final String username;
     private final String email;
     private final String billingAddress;
@@ -18,11 +21,11 @@ public class CheckoutOutputData {
     private final double balanceAfterPayment;
     private final boolean hasSufficientFunds;
 
-    public CheckoutOutputData(String username, String email, String billingAddress,
-                              List<CartItemDisplay> cartItems, double subtotal, int totalItems,
-                              double pointsDiscount, double totalAfterDiscount,
-                              double userBalance, int userPoints, double amountFromBalance,
-                              double balanceAfterPayment, boolean hasSufficientFunds) {
+    public CheckoutState(String username, String email, String billingAddress,
+                         List<CartItemDisplay> cartItems, double subtotal, int totalItems,
+                         double pointsDiscount, double totalAfterDiscount, double userBalance,
+                         int userPoints, double amountFromBalance, double balanceAfterPayment,
+                         boolean hasSufficientFunds) {
         this.username = username;
         this.email = email;
         this.billingAddress = billingAddress;
@@ -38,7 +41,7 @@ public class CheckoutOutputData {
         this.hasSufficientFunds = hasSufficientFunds;
     }
 
-    // Getters
+    // Getters (remove getUserId)
     public String getUsername() { return username; }
     public String getEmail() { return email; }
     public String getBillingAddress() { return billingAddress; }

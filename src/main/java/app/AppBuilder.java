@@ -8,6 +8,7 @@ import view.HomePageLoggedInView;
 import view.LoginView;
 import view.SignUpView;
 import view.ViewManager;
+import view.ProductView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,9 @@ public class AppBuilder {
     private HomePageLoggedInView homePageLoggedInView;
     private HomepageViewModel homePageLoggedInViewModel;
 
+    private ProductView productView;
+    private ProductViewModel productViewModel;
+
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
@@ -45,6 +49,14 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loginView = new LoginView(loginViewModel);
         cardPanel.add(loginView, loginView.getViewName());
+        return this;
+    }
+    public AppBuilder addProductView() {
+        productViewModel = new ProductViewModel();
+        addToCartViewModel = new AddToCartViewModel();
+
+        productView = new ProductView(productViewModel,addToCartViewModel);
+        cardPanel.add(productView, productView.getViewName());
         return this;
     }
 
