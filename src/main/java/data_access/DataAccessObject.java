@@ -3,6 +3,7 @@ package data_access;
 import use_case.add_to_cart.AddToCartUserDataAccessInterface;
 import use_case.checkout.CheckoutDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.open_product.OpenProductProductDataAccessInterface;
 import use_case.filter.FilterDataAccessInterface;
 import use_case.manage_address.UserDataAccessInterface;
@@ -37,10 +38,12 @@ public class DataAccessObject implements
     UserDataAccessInterface,
     OpenProductProductDataAccessInterface,
     SearchDataAccessInterface,
+    LogoutUserDataAccessInterface,
     SignUpDataAccessInterface {
 
         private final String URL1 = "https://xlez-ocau-8ty9.n2.xano.io/api:BftqpNiF";
         private final String URL2 = "https://xlez-ocau-8ty9.n2.xano.io/api:vu2PKIfe";
+        private String currentUsername;
 
         /* Helper methods */
 
@@ -280,7 +283,7 @@ public class DataAccessObject implements
                 jsonBody.put("cartUUID", user.getCart().getCartUUID());
 
                 Request request = new Request.Builder()
-                    .url(URL2 + "/user?=" + user.getUsername())
+                    .url(URL2 + "/user?username=" + user.getUsername())
                     .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
                     .build();
                 client.newCall(request).execute();
@@ -307,6 +310,16 @@ public class DataAccessObject implements
         @Override
         public boolean existsByName(String username) {
             return checkUserExists(username);
+        }
+
+        @Override
+        public void setCurrentUsername(String username) {
+            this.currentUsername = username;
+        }
+
+        @Override
+        public String getCurrentUsername() {
+            return this.currentUsername;
         }
 
         @Override

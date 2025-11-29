@@ -28,12 +28,12 @@ public class OrderConfirmationWindow extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        mainPanel.add(createUserInfoPanel(outputData), BorderLayout.NORTH);
-        mainPanel.add(createOrderDetailsPanel(outputData), BorderLayout.CENTER);
+        mainPanel.add(createUserInfoPanel(this.outputData), BorderLayout.NORTH);
+        mainPanel.add(createOrderDetailsPanel(this.outputData), BorderLayout.CENTER);
 
         // Create a panel for both total and the payment button
         JPanel southPanel = new JPanel(new BorderLayout());
-        southPanel.add(createTotalPanel(outputData), BorderLayout.NORTH);
+        southPanel.add(createTotalPanel(this.outputData), BorderLayout.NORTH);
         southPanel.add(createPaymentButtonPanel(), BorderLayout.SOUTH);
 
         mainPanel.add(southPanel, BorderLayout.SOUTH);
@@ -41,7 +41,7 @@ public class OrderConfirmationWindow extends JFrame {
         add(mainPanel);
     }
 
-    private JPanel createUserInfoPanel() {
+    private JPanel createUserInfoPanel(CheckoutOutputData checkoutData) {
         JPanel userPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         userPanel.setBorder(new TitledBorder("Customer Information"));
         userPanel.setPreferredSize(new Dimension(0, 240)); // Increased to ensure address visibility
@@ -66,7 +66,7 @@ public class OrderConfirmationWindow extends JFrame {
         return userPanel;
     }
 
-    private JComponent createOrderDetailsPanel() {
+    private JComponent createOrderDetailsPanel(CheckoutOutputData checkoutData) {
         JPanel orderPanel = new JPanel(new BorderLayout());
         orderPanel.setBorder(new TitledBorder("Order Details"));
         orderPanel.setPreferredSize(new Dimension(0, 280)); // Reduced from 350 to 280
@@ -117,7 +117,7 @@ public class OrderConfirmationWindow extends JFrame {
     /**
      * Bottom panel now shows the total AND an "Apply Promotion" button.
      */
-    private JPanel createTotalPanel() {
+    private JPanel createTotalPanel(CheckoutOutputData checkoutData) {
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         totalPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
 
