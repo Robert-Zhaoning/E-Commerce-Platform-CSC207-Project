@@ -43,6 +43,8 @@ public class AppBuilder {
     private ProductView productView;
     private ProductViewModel productViewModel;
 
+    private AddToCartViewModel addToCartViewModel;
+
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
