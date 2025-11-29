@@ -16,6 +16,7 @@ public class SignUpViewModel extends ViewModel<SignUpState> {
 
     public static final String CREATE_BUTTON_LABEL = "Sign up";
     public static final String LOGIN_BUTTON_LABEL = "Login";
+    public static final String BACK_BUTTON_LABEL = "Back";
 
     /**
      * Creates a SignUpViewModel object for the updating the SignUpView
