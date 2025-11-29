@@ -53,7 +53,7 @@ public class HomepagePresenter {
         this.viewManagerModel.setActiveViewName(this.filterViewModel.getViewName());
     }
     public void switchToListingView(){
-
+        this.viewManagerModel.setActiveViewName(this.makeListingViewModel.getViewName());
     }
     public void switchToLogoutView(){
 

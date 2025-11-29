@@ -10,4 +10,5 @@ public interface MakeListingInputBoundary {
      */
     void execute(MakeListingInputData makeListingInputData);
 
-    /*
+    void switchToHomePageView();
+}
