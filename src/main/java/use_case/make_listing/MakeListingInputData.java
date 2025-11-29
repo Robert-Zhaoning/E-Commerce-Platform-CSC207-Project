@@ -8,12 +8,14 @@ public class MakeListingInputData {
     private double price;
     private String filePath;
     private String category;
+    private String sellerName;
 
-    public MakeListingInputData(String productName, double price, String filePath, String category) {
+    public MakeListingInputData(String productName, double price, String filePath, String category, String sellerName) {
         this.productName = productName;
         this.price = price;
         this.filePath = filePath;
         this.category = category;
+        this.sellerName = sellerName;
     }
 
     public String getProductName() {
@@ -27,5 +29,8 @@ public class MakeListingInputData {
     }
     public String getCategory() {
         return category;
+    }
+    public String getSellerName() {
+        return sellerName;
     }
 }

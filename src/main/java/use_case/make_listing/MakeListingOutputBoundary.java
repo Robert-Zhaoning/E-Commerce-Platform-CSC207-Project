@@ -17,5 +17,5 @@ public interface MakeListingOutputBoundary {
     /**
      * Return to home page after everything is finished
      */
-    void switchToHomePage();
+    void switchToHomePageView();
 }

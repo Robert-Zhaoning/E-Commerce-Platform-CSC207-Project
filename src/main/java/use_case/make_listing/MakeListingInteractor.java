@@ -10,12 +10,12 @@ import java.nio.file.Paths;
 
 public class MakeListingInteractor implements MakeListingInputBoundary {
     
-    private final MakeListingOutputBoundary outputBoundary;
+    private final MakeListingOutputBoundary presenter;
     private final MakeListingDataAccessInterface dataAccessInterface;
-
-    public MakeListingInteractor(MakeListingOutputBoundary outputBoundary,
+    
+    public MakeListingInteractor(MakeListingOutputBoundary presenter,
                                  MakeListingDataAccessInterface dataAccessInterface) {
-        this.outputBoundary = outputBoundary;
+        this.presenter = presenter;
         this.dataAccessInterface = dataAccessInterface;
     }
 
@@ -23,14 +23,30 @@ public class MakeListingInteractor implements MakeListingInputBoundary {
      * Execute implementation
      */
     public void execute(MakeListingInputData inputData) {
-        Product product = new Product(
-            inputData.getProductName(),
-            inputData.getPrice(),
-            UUID.randomUUID().toString(),
-            Base64.getEncoder().encodeToString(
-                Files.readAllBytes(Paths.get(inputData.getFilePath()))
-            ),
-            
-        );
+        Product product;
+        try {
+            product = new Product(
+                inputData.getProductName(),
+                inputData.getPrice(),
+                UUID.randomUUID().toString(),
+                Base64.getEncoder().encodeToString(
+                    Files.readAllBytes(Paths.get(inputData.getFilePath()))
+                ),
+                dataAccessInterface.getUser(inputData.getSellerName()),
+                inputData.getCategory()
+            );
+        } catch (IOException e) {
+            presenter.prepareFailView("Failed to read image file: " + e.getMessage());
+            return;
+        }
+
+        dataAccessInterface.postListing(product);
+        MakeListingOutputData outputData = new MakeListingOutputData(product, product.getName() + " listed successfully!");
+        presenter.prepareSuccessView(outputData);
+    }
+
+    @Override
+    public void switchToHomePageView() {
+        presenter.switchToHomePageView();
     }
 }
