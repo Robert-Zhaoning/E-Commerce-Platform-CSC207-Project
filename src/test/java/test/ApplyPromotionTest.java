@@ -135,3 +135,69 @@ public class ApplyPromotionInteractorTest {
         System.out.println("Expected error: Invalid or unknown promo code.");
         System.out.println("Actual error  : " + presenter.lastErrorMessage);
     }
+
+    private static class FakeCartDataAccess implements CartDataAccessInterface {
+        private final Map<String, Cart> carts = new HashMap<>();
+
+        @Override
+        public Cart getCartByUsername(String username) {
+            return carts.get(username);
+        }
+
+        @Override
+        public void saveCart(String username, Cart cart) {
+            carts.put(username, cart);
+        }
+    }
+
+    private static class FakePromotionDataAccess implements PromotionDataAccessInterface {
+
+        @Override
+        public entity.Promotion findByCode(String code) {
+            // Always return null => invalid/unknown code.
+            return null;
+        }
+    }
+
+    private static class FakePresenter implements ApplyPromotionOutputBoundary {
+        public ApplyPromotionOutputData lastSuccess;
+        public String lastErrorMessage;
+
+        @Override
+        public void prepareSuccessView(ApplyPromotionOutputData outputData) {
+            lastSuccess = outputData;
+            lastErrorMessage = null;
+
+            System.out.println("[Presenter] SUCCESS");
+            System.out.println("  Username : " + outputData.getUsername());
+            System.out.println("  Code     : " + outputData.getPromoCode());
+            System.out.println("  Subtotal : " + outputData.getSubtotal());
+            System.out.println("  Discount : " + outputData.getDiscount());
+            System.out.println("  Total    : " + outputData.getTotal());
+            System.out.println("  Message  : " + outputData.getMessage());
+        }
+
+        @Override
+        public void prepareFailView(String errorMessage) {
+            lastSuccess = null;
+            lastErrorMessage = errorMessage;
+
+            System.out.println("[Presenter] FAIL");
+            System.out.println("  Error: " + errorMessage);
+        }
+    }
+
+    private static class FakeCartWithSubtotal extends Cart {
+        private final double fixedSubtotal;
+
+        public FakeCartWithSubtotal(User owner, double fixedSubtotal) {
+            super(owner);
+            this.fixedSubtotal = fixedSubtotal;
+        }
+
+        @Override
+        public double getSubtotal() {
+            return fixedSubtotal;
+        }
+    }
+}
