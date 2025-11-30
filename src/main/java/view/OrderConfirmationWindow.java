@@ -7,6 +7,7 @@ import interface_adapter.checkout.CheckoutPresenter;
 import javax.swing.*;
 
 import interface_adapter.checkout.OrderConfirmationView;
+import use_case.checkout.CheckoutOutputData;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -18,6 +19,7 @@ import java.awt.event.ActionListener;
 public class OrderConfirmationWindow extends JFrame implements OrderConfirmationView {
     private CheckoutPresenter presenter;
     private CheckoutViewModel currentViewModel;
+    private CheckoutOutputData checkoutData;
 
     public OrderConfirmationWindow(CheckoutPresenter presenter) {
         this.presenter = presenter;
@@ -50,7 +52,7 @@ public class OrderConfirmationWindow extends JFrame implements OrderConfirmation
         mainPanel.add(createOrderDetailsPanel(), BorderLayout.CENTER);
 
         JPanel southPanel = new JPanel(new BorderLayout());
-        southPanel.add(createTotalPanel(), BorderLayout.NORTH);
+        southPanel.add(createTotalPanel(checkoutData), BorderLayout.NORTH);
         southPanel.add(createPaymentButtonPanel(), BorderLayout.SOUTH);
 
         mainPanel.add(southPanel, BorderLayout.SOUTH);
@@ -134,7 +136,7 @@ public class OrderConfirmationWindow extends JFrame implements OrderConfirmation
     /**
      * Bottom panel now shows the total AND an "Apply Promotion" button.
      */
-    private JPanel createTotalPanel() {
+    private JPanel createTotalPanel(CheckoutOutputData checkoutData) {
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         totalPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
 
