@@ -16,7 +16,7 @@ public class Main {
                 .addLoginUseCase()
                 .addSignUpUseCase()
                 .addManageAddressUseCase()
-                .addCheckoutUseCase()
+                //.addCheckoutUseCase()
                 .addHomepageUseCase()
                 .addLogoutUseCase()
                 .build();

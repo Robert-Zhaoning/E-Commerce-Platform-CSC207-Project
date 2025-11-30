@@ -134,7 +134,12 @@ public class AppBuilder {
         HomepageState current = homepageViewModel.getState();
         HomepageState next = new HomepageState(current == null ? null : current.getUsername());
         next.setSearchText("All");
-        next.setProducts(dataAccessObject.getAllProducts());
+        var products = dataAccessObject.getAllProducts();
+        if (products == null || products.isEmpty()) {
+            System.err.println("[App] No products loaded. Check network/API access.");
+            products = java.util.Collections.emptyList();
+        }
+        next.setProducts(products);
         homepageViewModel.setState(next);
     }
 
@@ -239,33 +244,33 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addCheckoutUseCase() {
-        CheckoutOutputBoundary checkoutPresenter = new CheckoutOutputBoundary() {
-            @Override
-            public void presentOrderConfirmation(use_case.checkout.CheckoutOutputData outputData) {
-                SwingUtilities.invokeLater(() -> {
-                    PaymentWindow window = new PaymentWindow(outputData, dataAccessObject.getUser(outputData.getUsername()));
-                    window.setVisible(true);
-                });
-            }
-
-            @Override
-            public void presentCheckoutError(String errorMessage) {
-                SwingUtilities.invokeLater(() ->
-                        JOptionPane.showMessageDialog(null, errorMessage, "Checkout Error", JOptionPane.ERROR_MESSAGE));
-            }
-        };
-        checkoutInteractor = new CheckoutInteractor(dataAccessObject, checkoutPresenter);
-        openCart = () -> {
-            String currentUser = dataAccessObject.getCurrentUsername();
-            if (currentUser == null || currentUser.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please log in to view your cart.", "Not logged in", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            checkoutInteractor.execute(new CheckoutInputData(currentUser));
-        };
-        return this;
-    }
+//    public AppBuilder addCheckoutUseCase() {
+//        CheckoutOutputBoundary checkoutPresenter = new CheckoutOutputBoundary() {
+//            @Override
+//            public void presentOrderConfirmation(use_case.checkout.CheckoutOutputData outputData) {
+//                SwingUtilities.invokeLater(() -> {
+//                    PaymentWindow window = new PaymentWindow(outputData, dataAccessObject.getUser(outputData.getUsername()));
+//                    window.setVisible(true);
+//                });
+//            }
+//
+//            @Override
+//            public void presentCheckoutError(String errorMessage) {
+//                SwingUtilities.invokeLater(() ->
+//                        JOptionPane.showMessageDialog(null, errorMessage, "Checkout Error", JOptionPane.ERROR_MESSAGE));
+//            }
+//        };
+//        checkoutInteractor = new CheckoutInteractor(dataAccessObject, checkoutPresenter);
+//        openCart = () -> {
+//            String currentUser = dataAccessObject.getCurrentUsername();
+//            if (currentUser == null || currentUser.isEmpty()) {
+//                JOptionPane.showMessageDialog(null, "Please log in to view your cart.", "Not logged in", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//            checkoutInteractor.execute(new CheckoutInputData(currentUser));
+//        };
+//        return this;
+//    }
 
     /* ---------- Build ---------- */
 

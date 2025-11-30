@@ -32,7 +32,6 @@ import java.io.IOException;
 
 public class DataAccessObject implements
     AddToCartUserDataAccessInterface,
-    CheckoutDataAccessInterface,
     FilterDataAccessInterface,
     LoginUserDataAccessInterface,
     UserDataAccessInterface,
@@ -379,11 +378,11 @@ public class DataAccessObject implements
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonProduct = jsonArray.getJSONObject(i);
                     Product product = new Product(
-                    jsonProduct.getString("name"), 
-                    jsonProduct.getDouble("price"), 
+                    jsonProduct.getString("name"),
+                    jsonProduct.getDouble("price"),
                     jsonProduct.getString("id"),
-                    jsonProduct.getString("image_url"), 
-                    getUser(jsonProduct.getString("seller_name")), 
+                    jsonProduct.getString("image_url"),
+                    getUser(jsonProduct.getString("seller_name")),
                     jsonProduct.getString("category"),
                     jsonProduct.getDouble("average_review_score"),
                     new ArrayList<Integer>()
@@ -395,12 +394,15 @@ public class DataAccessObject implements
                     }
                     products.add(product);
                 }
+                System.out.println("[DAO] Loaded " + products.size() + " products from API.");
                 return products;
             }
             catch (IOException e) {
+                System.err.println("[DAO] Failed to load products (IO): " + e.getMessage());
                 return null;
             }
             catch (JSONException e) {
+                System.err.println("[DAO] Failed to parse products (JSON): " + e.getMessage());
                 return null;
             }
         }
@@ -467,11 +469,11 @@ public class DataAccessObject implements
             }
         }
 
-        @Override
-        public void saveOrder(Order order) {
-            // Not implemented
-            return;
-        }
+//        @Override
+//        public void saveOrder(Order order) {
+//            // Not implemented
+//            return;
+//        }
 
 
 
