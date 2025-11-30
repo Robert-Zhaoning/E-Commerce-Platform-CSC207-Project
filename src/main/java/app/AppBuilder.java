@@ -16,6 +16,9 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.make_listing.MakeListingController;
+import interface_adapter.make_listing.MakeListingPresenter;
+import interface_adapter.make_listing.MakeListingViewModel;
 import interface_adapter.manage_address.ManageAddressController;
 import interface_adapter.manage_address.ManageAddressPresenter;
 import interface_adapter.manage_address.ManageAddressState;
@@ -31,6 +34,7 @@ import use_case.checkout.CheckoutOutputBoundary;
 import use_case.homepage.HomepageInteractor;
 import use_case.login.LoginInteractor;
 import use_case.logout.LogoutInteractor;
+import use_case.make_listing.MakeListingInteractor;
 import use_case.manage_address.AddAddressInteractor;
 import use_case.manage_address.DeleteAddressInteractor;
 import use_case.manage_address.EditAddressInteractor;
@@ -38,6 +42,7 @@ import use_case.sign_up.SignUpInteractor;
 import view.HomepageView;
 import view.LoginView;
 import view.LogoutView;
+import view.MakeListingView;
 import view.ManageAddressView;
 import view.PaymentWindow;
 import view.ProductView;
@@ -77,6 +82,7 @@ public class AppBuilder {
     private ProductState productState;
     private AddToCartViewModel addToCartViewModel;
     private ManageAddressViewModel manageAddressViewModel;
+    private MakeListingViewModel makeListingViewModel;
 
     // Views
     private LoginView loginView;
@@ -85,6 +91,7 @@ public class AppBuilder {
     private LogoutView logoutView;
     private ProductView productView;
     private ManageAddressView manageAddressView;
+    private MakeListingView makeListingView;
 
     // Controllers / interactors shared
     private LoginController loginController;
@@ -92,6 +99,8 @@ public class AppBuilder {
     private HomepageController homepageController;
     private LogoutController logoutController;
     private CheckoutInteractor checkoutInteractor;
+    private MakeListingController makeListingController;
+    private MakeListingInteractor makeListingInteractor;
 
     private Runnable openManageAddress;
     private Runnable openCart;
@@ -156,6 +165,13 @@ public class AppBuilder {
         addToCartViewModel = new AddToCartViewModel();
         productView = new ProductView(productViewModel, addToCartViewModel);
         cardPanel.add(productView, productView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addMakeListingView() {
+        makeListingViewModel = new MakeListingViewModel();
+        makeListingView = new MakeListingView(makeListingViewModel);
+        cardPanel.add(makeListingView, makeListingView.getViewName());
         return this;
     }
 
@@ -241,6 +257,14 @@ public class AppBuilder {
             manageAddressViewModel.setState(state);
             manageAddressView.setVisible(true);
         };
+        return this;
+    }
+
+    public AppBuilder addMakeListingUseCase() {
+        MakeListingPresenter presenter = new MakeListingPresenter(viewManagerModel, makeListingViewModel, homepageViewModel);
+        makeListingInteractor = new MakeListingInteractor(presenter, dataAccessObject);
+        makeListingController = new MakeListingController(makeListingInteractor);
+        makeListingView.setController(makeListingController);
         return this;
     }
 

@@ -10,4 +10,8 @@ public class MakeListingState {
     MakeListingState(String username) {
         this.username = username;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }

@@ -7,6 +7,7 @@ import use_case.open_product.OpenProductProductDataAccessInterface;
 import use_case.filter.FilterDataAccessInterface;
 import use_case.manage_address.UserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.make_listing.MakeListingDataAccessInterface;
 import use_case.search.SearchDataAccessInterface;
 import use_case.sign_up.SignUpDataAccessInterface;
 import entity.Address;
@@ -38,7 +39,8 @@ public class DataAccessObject implements
     OpenProductProductDataAccessInterface,
     SearchDataAccessInterface,
     LogoutUserDataAccessInterface,
-    SignUpDataAccessInterface {
+    SignUpDataAccessInterface,
+    MakeListingDataAccessInterface {
 
         private final String URL1 = "https://xlez-ocau-8ty9.n2.xano.io/api:BftqpNiF";
         private final String URL2 = "https://xlez-ocau-8ty9.n2.xano.io/api:vu2PKIfe";
@@ -407,7 +409,11 @@ public class DataAccessObject implements
                 return null;
             }
         }
-
+        
+        @Override
+        public void postListing(Product product) {
+            postProduct(product);
+        }
         public void postProduct(Product product) {
             OkHttpClient client = new OkHttpClient();
             JSONObject jsonBody = new JSONObject();
