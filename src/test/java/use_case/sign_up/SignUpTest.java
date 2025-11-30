@@ -1,7 +1,6 @@
-package use_case.SignUp;
+package use_case.sign_up;
 
 import data_access.DataAccessObject;
-import use_case.sign_up.*;
 
 import java.time.LocalDateTime;
 

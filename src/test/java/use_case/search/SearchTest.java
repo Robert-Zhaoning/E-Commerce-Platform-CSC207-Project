@@ -1,7 +1,6 @@
-package use_case.Search;
+package use_case.search;
 
 import data_access.DataAccessObject;
-import use_case.search.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
