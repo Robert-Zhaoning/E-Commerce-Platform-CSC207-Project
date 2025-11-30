@@ -98,3 +98,33 @@ public class ManageAddressTest {
 
         System.out.println("  -> OK");
     }
+
+    private static void testAddAddressUserNotFound() {
+        System.out.println("[Test] AddAddressInteractor - user not found");
+
+        InMemoryUserDataAccess userData = new InMemoryUserDataAccess();
+
+        TestAddPresenter presenter = new TestAddPresenter();
+        AddAddressInteractor interactor = new AddAddressInteractor(userData, presenter);
+
+        AddAddressInputData input = new AddAddressInputData(
+                "unknownUser",
+                "100 Street",
+                "",
+                "City",
+                "Province",
+                "12345",
+                "Country",
+                false,
+                false
+        );
+
+        interactor.execute(input);
+
+        assertTrue(!presenter.successCalled, "AddAddress success should NOT be called.");
+        assertTrue(!presenter.validationCalled, "AddAddress validation should NOT be called.");
+        assertTrue(presenter.userNotFoundCalled, "User-not-found should be called.");
+
+        System.out.println("  -> OK");
+    }
+
