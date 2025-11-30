@@ -4,6 +4,7 @@ import data_access.InMemoryUserDataAccessObject;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -392,6 +393,54 @@ class LoginInteractorTest {
         assertEquals("Alice", userRepository.getCurrentUsername());
 
         assertEquals(List.of("Paul", "Alice"), successfulUsernames);
+    }
+
+    @Test
+    void switchToSignUpView() {
+        InMemoryUserDataAccessObject userRepository = new InMemoryUserDataAccessObject();
+        AtomicBoolean called = new AtomicBoolean(false);
+
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) { }
+
+            @Override
+            public void prepareFailView(String error) { }
+
+            @Override
+            public void switchToSignUpView() { called.set(true); }
+
+            @Override
+            public void switchToHomePage() { }
+        };
+
+        LoginInputBoundary interactor = new LoginInteractor(userRepository, presenter);
+        interactor.switchToSignUpView();
+        assertTrue(called.get(), "Presenter switchToSignUpView should be invoked");
+    }
+
+    @Test
+    void switchToHomePage() {
+        InMemoryUserDataAccessObject userRepository = new InMemoryUserDataAccessObject();
+        AtomicBoolean called = new AtomicBoolean(false);
+
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) { }
+
+            @Override
+            public void prepareFailView(String error) { }
+
+            @Override
+            public void switchToSignUpView() { }
+
+            @Override
+            public void switchToHomePage() { called.set(true); }
+        };
+
+        LoginInputBoundary interactor = new LoginInteractor(userRepository, presenter);
+        interactor.switchToHomePage();
+        assertTrue(called.get(), "Presenter switchToHomePage should be invoked");
     }
 
     private static class TrackingUserGateway implements LoginUserDataAccessInterface {
