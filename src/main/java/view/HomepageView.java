@@ -15,6 +15,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -103,23 +104,23 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
         }
         String searchText = homepageState.getSearchText();
         JLabel searchTextLabel = new JLabel("Current Filter/Search: " + searchText);
-        List<Product> products = homepageState.getProducts();
+        Map<String, List<Object>> products = homepageState.getProducts();
         if (products == null) {
-            products = Collections.emptyList();
+            products = Collections.emptyMap();
         }
         JPanel productShowcasePanel = new JPanel();
         productShowcasePanel.setLayout(new BoxLayout(productShowcasePanel, BoxLayout.Y_AXIS));
         productShowcasePanel.add(searchTextLabel);
-        for  (Product product : products) {
+        for  (String productKey : products.keySet()) {
             JPanel productPanel = new JPanel();
             JLabel imageLabel;
             try {
-                imageLabel = new JLabel(new ImageIcon(ImageIO.read(new URL(product.getImageUrl()))));
+                imageLabel = new JLabel(new ImageIcon(ImageIO.read(new URL((String)products.get(productKey).get(1)))));
             } catch (Exception e){
                 imageLabel = new JLabel("No Image");
             }
-            JLabel productLabel = new JLabel(product.getName());
-            JLabel productPriceLabel = new JLabel(Double.toString(product.getPrice()));
+            JLabel productLabel = new JLabel((String)products.get(productKey).get(0));
+            JLabel productPriceLabel = new JLabel("$" + (Double)products.get(productKey).get(2));
             JButton productInfoButton = new JButton("Info");
             productPanel.add(imageLabel);
             productPanel.add(productLabel);
@@ -128,7 +129,7 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
             productShowcasePanel.add(productPanel);
             productInfoButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    homepageController.switchToInfoView(product.getProductUUID(),homepageState.getUsername());
+                    homepageController.switchToInfoView(productKey,homepageState.getUsername());
                 }
             });
         }

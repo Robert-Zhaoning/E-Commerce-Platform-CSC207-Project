@@ -1,6 +1,7 @@
 package app;
 
 import data_access.DataAccessObject;
+import entity.Product;
 import interface_adapter.Product.ProductController;
 import interface_adapter.Product.ProductPresenter;
 import interface_adapter.Product.ProductState;
@@ -58,6 +59,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.CardLayout;
+import java.util.*;
 
 /**
  * App builder with explicit add* methods for views and use cases.
@@ -151,7 +153,13 @@ public class AppBuilder {
             System.err.println("[App] No products loaded. Check network/API access.");
             products = java.util.Collections.emptyList();
         }
-        next.setProducts(products);
+        Map<String, List<Object>> mappedProducts = new HashMap<>();
+        for (Product p: products){
+            if (!mappedProducts.containsKey(p.getProductUUID())){
+                mappedProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getImageUrl(), p.getPrice())));
+            }
+        }
+        next.setProducts(mappedProducts);
         homepageViewModel.setState(next);
     }
 
