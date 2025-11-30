@@ -7,7 +7,7 @@ import interface_adapter.homepage.HomepageViewModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -115,7 +115,9 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
             JPanel productPanel = new JPanel();
             JLabel imageLabel;
             try {
-                imageLabel = new JLabel(new ImageIcon(ImageIO.read(new URL((String)products.get(productKey).get(1)))));
+                Image original = ImageIO.read(new URL((String)products.get(productKey).get(1)));
+                Image scaled = original.getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                imageLabel = new JLabel(new ImageIcon(scaled));
             } catch (Exception e){
                 imageLabel = new JLabel("No Image");
             }

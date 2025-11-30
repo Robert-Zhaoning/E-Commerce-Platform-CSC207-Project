@@ -10,6 +10,9 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.add_to_cart.AddToCartController;
 import interface_adapter.add_to_cart.AddToCartPresenter;
 import interface_adapter.add_to_cart.AddToCartViewModel;
+import interface_adapter.filter.FilterController;
+import interface_adapter.filter.FilterPresenter;
+import interface_adapter.filter.FilterState;
 import interface_adapter.filter.FilterViewModel;
 import interface_adapter.homepage.HomepageController;
 import interface_adapter.homepage.HomepagePresenter;
@@ -25,6 +28,9 @@ import interface_adapter.manage_address.ManageAddressController;
 import interface_adapter.manage_address.ManageAddressPresenter;
 import interface_adapter.manage_address.ManageAddressState;
 import interface_adapter.manage_address.ManageAddressViewModel;
+import interface_adapter.search.SearchController;
+import interface_adapter.search.SearchPresenter;
+import interface_adapter.search.SearchState;
 import interface_adapter.search.SearchViewModel;
 import interface_adapter.sign_up.SignUpController;
 import interface_adapter.sign_up.SignUpPresenter;
@@ -35,6 +41,9 @@ import use_case.add_to_cart.AddToCartOutputBoundary;
 import use_case.checkout.CheckoutInputData;
 import use_case.checkout.CheckoutInteractor;
 import use_case.checkout.CheckoutOutputBoundary;
+import use_case.filter.FilterInputBoundary;
+import use_case.filter.FilterInteractor;
+import use_case.filter.FilterOutputBoundary;
 import use_case.homepage.HomepageInteractor;
 import use_case.login.LoginInteractor;
 import use_case.logout.LogoutInteractor;
@@ -43,15 +52,13 @@ import use_case.manage_address.DeleteAddressInteractor;
 import use_case.manage_address.EditAddressInteractor;
 import use_case.open_product.OpenProductInteractor;
 import use_case.open_product.OpenProductOutputBoundary;
+import use_case.search.SearchInputBoundary;
+import use_case.search.SearchInteractor;
+import use_case.search.SearchOutputBoundary;
+import use_case.sign_up.SignUpInputBoundary;
 import use_case.sign_up.SignUpInteractor;
-import view.HomepageView;
-import view.LoginView;
-import view.LogoutView;
-import view.ManageAddressView;
-import view.PaymentWindow;
-import view.ProductView;
-import view.SignUpView;
-import view.ViewManager;
+import use_case.sign_up.SignUpOutputBoundary;
+import view.*;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -95,6 +102,8 @@ public class AppBuilder {
     private LogoutView logoutView;
     private ProductView productView;
     private ManageAddressView manageAddressView;
+    private SearchView searchView;
+    private FilterView filterView;
 
     // Controllers / interactors shared
     private LoginController loginController;
@@ -106,9 +115,13 @@ public class AppBuilder {
     private AddToCartController addToCartController;
     private AddToCartInteractor addToCartInteractor;
     private OpenProductInteractor openProductInteractor;
+    private FilterController filterController;
+    private SearchController searchController;
 
     private Runnable openManageAddress;
     private Runnable openCart;
+
+    private AddToCartViewModel addToCartViewModel;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -198,6 +211,20 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addSearchView() {
+        searchViewModel = new SearchViewModel();
+        searchView = new SearchView(searchViewModel);
+        cardPanel.add(searchView, searchView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addFilterView() {
+        filterViewModel = new FilterViewModel();
+        filterView = new FilterView(filterViewModel);
+        cardPanel.add(filterView, filterView.getViewName());
+        return this;
+    }
+
     /* ---------- Use case wiring ---------- */
 
     public AppBuilder addLoginUseCase() {
@@ -209,8 +236,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addSignUpUseCase() {;
-        SignUpPresenter presenter = new SignUpPresenter(signUpViewModel, new SignUpState(), viewManagerModel, loginViewModel, homepageViewModel, homepageState);
-        SignUpInteractor interactor = new SignUpInteractor(presenter, dataAccessObject);
+        SignUpOutputBoundary presenter = new SignUpPresenter(signUpViewModel, new SignUpState(), viewManagerModel, loginViewModel, homepageViewModel, homepageState);
+        SignUpInputBoundary interactor = new SignUpInteractor(presenter, dataAccessObject);
         signUpController = new SignUpController(interactor);
         signUpView.setController(signUpController);
         return this;
@@ -271,6 +298,22 @@ public class AppBuilder {
             manageAddressViewModel.setState(state);
             manageAddressView.setVisible(true);
         };
+        return this;
+    }
+
+    public AppBuilder addFilterUseCase() {
+        FilterOutputBoundary filterPresenter = new FilterPresenter(filterViewModel, new FilterState(), viewManagerModel, homepageViewModel, homepageState);
+        FilterInputBoundary filterInteractor = new FilterInteractor(filterPresenter, dataAccessObject);
+        filterController = new FilterController(filterInteractor);
+        filterView.setController(filterController);
+        return this;
+    }
+
+    public AppBuilder addSearchUseCase() {
+        SearchOutputBoundary searchPresenter = new SearchPresenter(searchViewModel, new SearchState(), viewManagerModel, homepageViewModel, homepageState);
+        SearchInputBoundary searchInteractor = new SearchInteractor(searchPresenter, dataAccessObject);
+        searchController = new SearchController(searchInteractor);
+        searchView.setController(searchController);
         return this;
     }
 
