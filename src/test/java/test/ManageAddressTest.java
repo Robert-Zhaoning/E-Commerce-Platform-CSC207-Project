@@ -281,5 +281,86 @@ public class ManageAddressTest {
         System.out.println("  -> OK");
     }
 
+    /**
+     * In-memory implementation of UserDataAccessInterface
+     */
+    private static class InMemoryUserDataAccess implements UserDataAccessInterface {
 
+        private final Map<String, User> users = new HashMap<>();
+
+        @Override
+        public User getUser(String username) {
+            return users.get(username);
+        }
+
+        @Override
+        public void saveUser(User user) {
+            users.put(user.getUsername(), user);
+        }
+
+    }
+
+    private static class TestAddPresenter implements AddAddressOutputBoundary {
+
+        boolean successCalled = false;
+        boolean validationCalled = false;
+        boolean userNotFoundCalled = false;
+        Map<String, String> validationErrors = Collections.emptyMap();
+
+        @Override
+        public void prepareSuccessView(AddAddressOutputData outputData) {
+            successCalled = true;
+        }
+
+        @Override
+        public void prepareFailView(Map<String, String> errors) {
+            validationCalled = true;
+            validationErrors = errors;
+        }
+
+        @Override
+        public void prepareUserNotFoundView(String message) {
+            userNotFoundCalled = true;
+        }
+    }
+
+    private static class TestEditPresenter implements EditAddressOutputBoundary {
+
+        boolean successCalled = false;
+        boolean validationCalled = false;
+        boolean notFoundCalled = false;
+
+        @Override
+        public void prepareSuccessView(EditAddressOutputData outputData) {
+            successCalled = true;
+        }
+
+        @Override
+        public void prepareFailView(Map<String, String> errors) {
+            validationCalled = true;
+        }
+
+        @Override
+        public void prepareNotFoundView(String message) {
+            notFoundCalled = true;
+        }
+    }
+
+
+    private static class TestDeletePresenter implements DeleteAddressOutputBoundary {
+
+        boolean successCalled = false;
+        boolean notFoundCalled = false;
+
+        @Override
+        public void prepareSuccessView(DeleteAddressOutputData outputData) {
+            successCalled = true;
+        }
+
+        @Override
+        public void prepareNotFoundView(String message) {
+            notFoundCalled = true;
+        }
+    }
+}
 
