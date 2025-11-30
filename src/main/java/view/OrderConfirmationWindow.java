@@ -148,7 +148,7 @@ public class OrderConfirmationWindow extends JFrame implements OrderConfirmation
 
         JButton applyPromoButton = new JButton("Apply Promotion...");
         applyPromoButton.addActionListener(e -> {
-            ApplyPromotionWindow promoWindow = new ApplyPromotionWindow(currentViewModel);
+            ApplyPromotionWindow promoWindow = new ApplyPromotionWindow(checkoutdata);
             promoWindow.setVisible(true);
         });
 
