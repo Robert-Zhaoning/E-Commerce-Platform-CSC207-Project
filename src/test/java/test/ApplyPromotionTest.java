@@ -8,196 +8,173 @@ import use_case.apply_promotion.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-public class ApplyPromotionInteractorTest {
+public class ApplyPromotionTest {
 
     public static void main(String[] args) {
 
-        System.out.println("=== ApplyPromotionInteractor Manual Tests ===");
+        System.out.println("=== ApplyPromotionInteractor Manual Tests (Final Version) ===");
 
-        testEmptyCode();
-        System.out.println("------------------------------------------------");
+        testEmptyPromoCode();
+        line();
 
         testCartNotFound();
-        System.out.println("------------------------------------------------");
+        line();
 
-        testEmptyCartSubtotal();
-        System.out.println("------------------------------------------------");
+        testEmptyCart();
+        line();
 
-        testInvalidCode();
-        System.out.println("------------------------------------------------");
+        testInvalidPromoCode();
+        line();
 
-        System.out.println("Tests finished. Check console output above.");
+        System.out.println("All manual tests finished.");
     }
 
-    /**
-     * Case 1: promo code is empty string.
-     * Expected: presenter.prepareFailView("Promo code cannot be empty.")
-     */
-    private static void testEmptyCode() {
+    private static void line() {
+        System.out.println("--------------------------------------");
+    }
+
+    private static void testEmptyPromoCode() {
         System.out.println("[Test] Empty promo code");
 
-        FakeCartDataAccess cartData = new FakeCartDataAccess();
-        FakePromotionDataAccess promoData = new FakePromotionDataAccess();
+        FakeCartDataAccess cartDB = new FakeCartDataAccess();
+        FakePromotionDataAccess promoDB = new FakePromotionDataAccess();
         FakePresenter presenter = new FakePresenter();
 
         ApplyPromotionInteractor interactor =
-                new ApplyPromotionInteractor(cartData, promoData, presenter);
+                new ApplyPromotionInteractor(cartDB, promoDB, presenter);
 
         ApplyPromotionInputData input =
                 new ApplyPromotionInputData("alice", "   ");
 
         interactor.execute(input);
 
-        System.out.println("Expected error: Promo code cannot be empty.");
-        System.out.println("Actual error  : " + presenter.lastErrorMessage);
+        System.out.println("Expected: Promo code cannot be empty.");
+        System.out.println("Actual:   " + presenter.lastError);
     }
 
-    /**
-     * Case 2: cart not found for this user.
-     * Expected: presenter.prepareFailView("Cart not found for user: bob")
-     */
+
     private static void testCartNotFound() {
         System.out.println("[Test] Cart not found");
 
-        FakeCartDataAccess cartData = new FakeCartDataAccess(); // no carts stored
-        FakePromotionDataAccess promoData = new FakePromotionDataAccess();
+        FakeCartDataAccess cartDB = new FakeCartDataAccess();
+        FakePromotionDataAccess promoDB = new FakePromotionDataAccess();
         FakePresenter presenter = new FakePresenter();
 
         ApplyPromotionInteractor interactor =
-                new ApplyPromotionInteractor(cartData, promoData, presenter);
+                new ApplyPromotionInteractor(cartDB, promoDB, presenter);
 
         ApplyPromotionInputData input =
                 new ApplyPromotionInputData("bob", "SAVE10");
 
         interactor.execute(input);
 
-        System.out.println("Expected error: Cart not found for user: bob");
-        System.out.println("Actual error  : " + presenter.lastErrorMessage);
+        System.out.println("Expected: Cart not found for user: bob");
+        System.out.println("Actual:   " + presenter.lastError);
     }
 
-    /**
-     * Case 3: cart exists but subtotal is zero (empty cart).
-     * Expected: presenter.prepareFailView("Your cart is empty.")
-     */
-    private static void testEmptyCartSubtotal() {
+
+    private static void testEmptyCart() {
         System.out.println("[Test] Empty cart subtotal");
 
-        FakeCartDataAccess cartData = new FakeCartDataAccess();
-        FakePromotionDataAccess promoData = new FakePromotionDataAccess();
+        FakeCartDataAccess cartDB = new FakeCartDataAccess();
+        FakePromotionDataAccess promoDB = new FakePromotionDataAccess();
         FakePresenter presenter = new FakePresenter();
 
-        User user = new User("charlie", "c@example.com", "password", "Address 1");
-        Cart emptyCart = new FakeCartWithSubtotal(user, 0.0);
-        cartData.saveCart("charlie", emptyCart);
+        Cart emptyCart = new Cart("charlie");
+        cartDB.saveCart("charlie", emptyCart);
 
         ApplyPromotionInteractor interactor =
-                new ApplyPromotionInteractor(cartData, promoData, presenter);
+                new ApplyPromotionInteractor(cartDB, promoDB, presenter);
 
         ApplyPromotionInputData input =
                 new ApplyPromotionInputData("charlie", "SAVE10");
 
         interactor.execute(input);
 
-        System.out.println("Expected error: Your cart is empty.");
-        System.out.println("Actual error  : " + presenter.lastErrorMessage);
+        System.out.println("Expected: Your cart is empty.");
+        System.out.println("Actual:   " + presenter.lastError);
     }
 
-    /**
-     * Case 4: cart has items and subtotal > 0, but promo code is not found
-     * in the promotion repository.
-     * Expected: presenter.prepareFailView("Invalid or unknown promo code.")
-     */
-    private static void testInvalidCode() {
+
+    private static void testInvalidPromoCode() {
         System.out.println("[Test] Invalid promo code");
 
-        FakeCartDataAccess cartData = new FakeCartDataAccess();
-        FakePromotionDataAccess promoData = new FakePromotionDataAccess();
+        FakeCartDataAccess cartDB = new FakeCartDataAccess();
+        FakePromotionDataAccess promoDB = new FakePromotionDataAccess();
         FakePresenter presenter = new FakePresenter();
 
-        User user = new User("dana", "d@example.com", "password", "Address 1");
-        Cart cart = new Cart(user);
+        Cart cart = new Cart("dana");
 
-        Product p = new Product(1, "Laptop", "Electronics", 1000.0, 5);
-        cart.addProduct(p, 1);
+        Product laptop = new Product(
+                "Laptop",
+                1000.0,
+                UUID.randomUUID().toString(),
+                "laptop.png",
+                new User("seller1", "s@example.com", "pwd", "somewhere"),
+                "electronics"
+        );
 
-        cartData.saveCart("dana", cart);
+        cart.addProduct(laptop, 1);
+
+        cartDB.saveCart("dana", cart);
 
         ApplyPromotionInteractor interactor =
-                new ApplyPromotionInteractor(cartData, promoData, presenter);
+                new ApplyPromotionInteractor(cartDB, promoDB, presenter);
 
         ApplyPromotionInputData input =
-                new ApplyPromotionInputData("dana", "UNKNOWN_CODE");
+                new ApplyPromotionInputData("dana", "NOT_REAL");
 
         interactor.execute(input);
 
-        System.out.println("Cart subtotal > 0; promo code UNKNOWN_CODE not in DB.");
-        System.out.println("Expected error: Invalid or unknown promo code.");
-        System.out.println("Actual error  : " + presenter.lastErrorMessage);
+        System.out.println("Expected: Invalid or unknown promo code.");
+        System.out.println("Actual:   " + presenter.lastError);
     }
 
     private static class FakeCartDataAccess implements CartDataAccessInterface {
-        private final Map<String, Cart> carts = new HashMap<>();
+        Map<String, Cart> store = new HashMap<>();
 
         @Override
         public Cart getCartByUsername(String username) {
-            return carts.get(username);
+            return store.get(username);
         }
 
         @Override
         public void saveCart(String username, Cart cart) {
-            carts.put(username, cart);
+            store.put(username, cart);
         }
     }
 
     private static class FakePromotionDataAccess implements PromotionDataAccessInterface {
-
         @Override
         public entity.Promotion findByCode(String code) {
-            // Always return null => invalid/unknown code.
             return null;
         }
     }
 
     private static class FakePresenter implements ApplyPromotionOutputBoundary {
-        public ApplyPromotionOutputData lastSuccess;
-        public String lastErrorMessage;
+
+        String lastError = null;
+        ApplyPromotionOutputData lastSuccess = null;
 
         @Override
         public void prepareSuccessView(ApplyPromotionOutputData outputData) {
+            lastError = null;
             lastSuccess = outputData;
-            lastErrorMessage = null;
 
             System.out.println("[Presenter] SUCCESS");
-            System.out.println("  Username : " + outputData.getUsername());
-            System.out.println("  Code     : " + outputData.getPromoCode());
-            System.out.println("  Subtotal : " + outputData.getSubtotal());
-            System.out.println("  Discount : " + outputData.getDiscount());
-            System.out.println("  Total    : " + outputData.getTotal());
-            System.out.println("  Message  : " + outputData.getMessage());
+            System.out.println("  Username: " + outputData.getUsername());
+            System.out.println("  Code    : " + outputData.getPromoCode());
+            System.out.println("  Total   : " + outputData.getTotal());
         }
 
         @Override
         public void prepareFailView(String errorMessage) {
             lastSuccess = null;
-            lastErrorMessage = errorMessage;
+            lastError = errorMessage;
 
-            System.out.println("[Presenter] FAIL");
-            System.out.println("  Error: " + errorMessage);
-        }
-    }
-
-    private static class FakeCartWithSubtotal extends Cart {
-        private final double fixedSubtotal;
-
-        public FakeCartWithSubtotal(User owner, double fixedSubtotal) {
-            super(owner);
-            this.fixedSubtotal = fixedSubtotal;
-        }
-
-        @Override
-        public double getSubtotal() {
-            return fixedSubtotal;
+            System.out.println("[Presenter] FAIL: " + errorMessage);
         }
     }
 }
