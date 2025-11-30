@@ -174,7 +174,9 @@ public class AppBuilder {
         addToCartInteractor = new AddToCartInteractor(dataAccessObject,addToCartPresenter,dataAccessObject2);
         productController = new ProductController(openProductInteractor);
         addToCartController = new AddToCartController(addToCartInteractor);
-        productView = new ProductView(productController,addToCartController, productViewModel, addToCartViewModel);
+        productView = new ProductView(productViewModel, addToCartViewModel);
+        productView.setProductController(productController);
+        productView.setAddToCartController(addToCartController);
         cardPanel.add(productView, productView.getViewName());
         return this;
     }

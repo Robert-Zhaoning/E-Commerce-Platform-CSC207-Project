@@ -36,13 +36,8 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     private final JButton addButton = new JButton("Add");
     private final JButton exitButton = new JButton("Exit");
 
-    public ProductView(ProductController productController,
-                       AddToCartController addToCartController,
-                       ProductViewModel productViewModel,
+    public ProductView(ProductViewModel productViewModel,
                        AddToCartViewModel addToCartViewModel) {
-
-        this.productController = productController;
-        this.addToCartController = addToCartController;
 
         this.productViewModel = productViewModel;
         this.productViewModel.addPropertyChangeListener(this);
@@ -177,7 +172,8 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         return viewName;
     }
 
-    public void setController(ProductController controller) {
+    public void setProductController(ProductController controller) {
         this.productController = controller;
     }
+    public void setAddToCartController(AddToCartController controller) {this.addToCartController = controller;}
     }
