@@ -11,5 +11,5 @@ public interface HomepageInputBoundary {
     void switchToFilterView();
     void switchToListingView();
     void switchToLogoutView();
-    void addFunds(double amount);
+    void addFunds(String username, double amount);
 }

@@ -39,7 +39,7 @@ public class HomepageController {
         this.homepageInteractor.switchToLogoutView();
     }
     // public void switchToDealsView(){ this.homepageInteractor.switchToDealsView}
-    public void addFunds(double amount){
-        this.homepageInteractor.addFunds(amount);
+    public void addFunds(String username, double amount){
+        this.homepageInteractor.addFunds(username, amount);
     }
 }

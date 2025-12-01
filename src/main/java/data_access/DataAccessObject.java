@@ -6,6 +6,7 @@ import use_case.checkout.CheckoutDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.open_product.OpenProductProductDataAccessInterface;
 import use_case.filter.FilterDataAccessInterface;
+import use_case.homepage.AddFundsDataAccessInterface;
 import use_case.manage_address.UserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.search.SearchDataAccessInterface;
@@ -40,7 +41,8 @@ public class DataAccessObject implements
     OpenProductProductDataAccessInterface,
     SearchDataAccessInterface,
     LogoutUserDataAccessInterface,
-    SignUpDataAccessInterface {
+    SignUpDataAccessInterface, 
+    AddFundsDataAccessInterface {
 
         private final String URL1 = "https://xlez-ocau-8ty9.n2.xano.io/api:BftqpNiF";
         private final String URL2 = "https://xlez-ocau-8ty9.n2.xano.io/api:vu2PKIfe";
@@ -472,6 +474,15 @@ public class DataAccessObject implements
             catch (JSONException e) {
             }
             catch (IOException e) {
+            }
+        }
+
+        @Override
+        public void addFunds(String username, double amount) {
+            User user = getUser(username);
+            if (user != null) {
+                user.addBalance(amount);
+                saveUser(user);
             }
         }
 

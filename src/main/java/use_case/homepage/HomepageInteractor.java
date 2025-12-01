@@ -2,8 +2,11 @@ package use_case.homepage;
 
 public class HomepageInteractor implements HomepageInputBoundary {
     private HomepageOutputBoundary homepagePresenter;
-    public HomepageInteractor(HomepageOutputBoundary homepagePresenter) {
+    private AddFundsDataAccessInterface addFundsDataAccess;
+    public HomepageInteractor(HomepageOutputBoundary homepagePresenter, 
+        AddFundsDataAccessInterface addFundsDataAccess) {
         this.homepagePresenter = homepagePresenter;
+        this.addFundsDataAccess = addFundsDataAccess;
     }
     public void switchToSignUpView(){
         this.homepagePresenter.switchToSignUpView();
@@ -37,7 +40,7 @@ public class HomepageInteractor implements HomepageInputBoundary {
         this.homepagePresenter.switchToLogoutView();
     }
     
-    public void addFunds(double amount){
-        this.homepagePresenter.addFundsPopup();
+    public void addFunds(String username, double amount){
+        addFundsDataAccess.addFunds(username, amount);
     }
 }
