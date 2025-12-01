@@ -46,7 +46,7 @@ public class PaymentWindow extends JFrame implements PaymentView, ProcessPayment
 
     @Override
     public void showPaymentResult(boolean success, String message) {
-        // This method now serves both interfaces
+
         if (success) {
             JOptionPane.showMessageDialog(this, message, "Payment Complete",
                     JOptionPane.INFORMATION_MESSAGE);
