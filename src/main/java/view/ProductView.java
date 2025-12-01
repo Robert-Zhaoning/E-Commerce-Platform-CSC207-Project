@@ -3,9 +3,9 @@ package view;
 import interface_adapter.Product.ProductController;
 import interface_adapter.Product.ProductState;
 import interface_adapter.Product.ProductViewModel;
-import interface_adapter.add_to_cart.AddToCartViewModel;
 import interface_adapter.add_to_cart.AddToCartController;
 import interface_adapter.add_to_cart.AddToCartState;
+import interface_adapter.add_to_cart.AddToCartViewModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -39,6 +39,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     private final JButton addButton = new JButton("Add");
     private final JButton exitButton = new JButton("Exit");
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     public ProductView(ProductViewModel productViewModel,
                        AddToCartViewModel addToCartViewModel) {
 
@@ -63,7 +64,7 @@ public class ProductView extends JPanel implements PropertyChangeListener {
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        JPanel imagePanel = new JPanel();
+        final JPanel imagePanel = new JPanel();
         imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
         imagePanel.add(imageLabel);
         imagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -82,29 +83,32 @@ public class ProductView extends JPanel implements PropertyChangeListener {
 
         add(Box.createVerticalStrut(10));
 
-        JPanel qtyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel qtyPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         qtyPanel.add(new JLabel("Qty:"));
         qtyPanel.add(quantityField);
         add(qtyPanel);
 
         add(Box.createVerticalStrut(10));
-        JPanel buttonRow = new JPanel(new BorderLayout());
+        final JPanel buttonRow = new JPanel(new BorderLayout());
         buttonRow.add(addButton, BorderLayout.EAST);
         buttonRow.add(username, BorderLayout.CENTER);
         buttonRow.add(exitButton, BorderLayout.WEST);
         add(buttonRow);
         exitButton.addActionListener(new ActionListener() {
-            public void actionPerformed (ActionEvent e){
+            public void actionPerformed (ActionEvent e) {
                 productController.switchToHomePageView();
             }
         });
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                ProductState currentState = productViewModel.getState();
-
-                String qtyText = quantityField.getText();
-                int quantity;
+                final ProductState currentState = productViewModel.getState();
+                if (currentState.getUsername() == null || currentState.getUsername().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please log in before adding items to the cart.");
+                    return;
+                }
+                final String qtyText = quantityField.getText();
+                final int quantity;
                 try {
                     quantity = Integer.parseInt(qtyText);
                 } catch (NumberFormatException ex) {
@@ -122,19 +126,21 @@ public class ProductView extends JPanel implements PropertyChangeListener {
 
 
     private JPanel makeLabelPanel(String label, JLabel value) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
         p.add(new JLabel(label));
         p.add(value);
         return p;
     }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        Object newState = evt.getNewValue();
+        final Object newState = evt.getNewValue();
         if (newState instanceof ProductState) {
-            ProductState state = (ProductState) newState;
+            final ProductState state = (ProductState) newState;
             if (state.getPrice() == null || state.getCategory() == null) {
                 productController.execute(state.getProductid(), state.getUsername());
-            } else {
+            }
+            else {
                 productName.setText(state.getName());
                 seller.setText(state.getSellerName());
                 productPrice.setText(state.getPrice());
@@ -149,14 +155,15 @@ public class ProductView extends JPanel implements PropertyChangeListener {
                             200, 200, Image.SCALE_SMOOTH
                     );
                     imageLabel.setIcon(new ImageIcon(scaled));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             return;
         }
         if (newState instanceof AddToCartState) {
-            AddToCartState state = (AddToCartState) newState;
+            final AddToCartState state = (AddToCartState) newState;
 
             if (state.getQuantityError() != null) {
                 JOptionPane.showMessageDialog(this, state.getQuantityError());
@@ -177,5 +184,8 @@ public class ProductView extends JPanel implements PropertyChangeListener {
     public void setProductController(ProductController controller) {
         this.productController = controller;
     }
-    public void setAddToCartController(AddToCartController controller) {this.addToCartController = controller;}
+
+    public void setAddToCartController(AddToCartController controller) {
+        this.addToCartController = controller;
+    }
     }

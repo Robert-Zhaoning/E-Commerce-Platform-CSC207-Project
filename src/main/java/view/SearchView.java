@@ -88,13 +88,8 @@ public class SearchView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState searchState = (SearchState) evt.getNewValue();
-        if (searchState.getSearchTextSuccess() != null){
-            this.searchController.switchToHomepageView();
-        }
         if (searchState.getErrorFailure() != null){
-            this.errorLabel.setText(searchState.getErrorFailure());
-        } else {
-            this.errorLabel.setText("");
+            JOptionPane.showMessageDialog(null, searchState.getErrorFailure());
         }
     }
 
