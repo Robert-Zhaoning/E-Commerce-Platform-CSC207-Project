@@ -186,7 +186,7 @@ public class AppBuilder {
         Map<String, List<Object>> mappedProducts = new HashMap<>();
         for (Product p: products){
             if (!mappedProducts.containsKey(p.getProductUUID())){
-                mappedProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getImageUrl(), p.getPrice())));
+                mappedProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getimageBase64(), p.getPrice())));
             }
         }
         next.setProducts(mappedProducts);

@@ -41,12 +41,16 @@ public class FilterInteractor implements FilterInputBoundary{
 
         // Gets the most expensive products by comparing their prices
         } else if (filterInputData.getFilter().equals("Most Expensive")) {
-            allProducts.sort(Comparator.comparingDouble(Product::getPrice).reversed());
-            fillProductMapFromList(allProducts, filteredProducts);
+            allProducts.sort(Comparator.comparingDouble(Product::getPrice));
+            List<Product> newList = new ArrayList<>();
+            for (Product product : allProducts) {
+                newList.add(0, product);
+            }
+            fillProductMapFromList(newList, filteredProducts);
 
         // Gets the least expensive products by comparing their prices
         } else if (filterInputData.getFilter().equals("Least Expensive")) {
-            allProducts.sort((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+            allProducts.sort(Comparator.comparingDouble(Product::getPrice));
             fillProductMapFromList(allProducts, filteredProducts);
 
         // Gets the products associated with the user-specified category in the filter input data
@@ -54,7 +58,7 @@ public class FilterInteractor implements FilterInputBoundary{
             for (Product product : allProducts) {
                 if (product.getCategory().equalsIgnoreCase(filterInputData.getFilter())) {
                     if (!filteredProducts.containsKey(product.getProductUUID())){
-                        filteredProducts.put(product.getProductUUID(), new ArrayList<>(Arrays.asList(product.getName(), product.getImageUrl(), product.getPrice())));
+                        filteredProducts.put(product.getProductUUID(), new ArrayList<>(Arrays.asList(product.getName(), product.getimageBase64(), product.getPrice())));
                     }
                 }
             }
@@ -84,7 +88,7 @@ public class FilterInteractor implements FilterInputBoundary{
     private static void fillProductMapFromList(List<Product> allProducts, Map<String, List<Object>> filteredProducts) {
         for (Product p: allProducts){
             if (!filteredProducts.containsKey(p.getProductUUID())){
-                filteredProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getImageUrl(), p.getPrice())));
+                filteredProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getimageBase64(), p.getPrice())));
             }
         }
     }
