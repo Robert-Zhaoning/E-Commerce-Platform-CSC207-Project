@@ -1,6 +1,7 @@
 package app;
 
 import data_access.DataAccessObject;
+import entity.Product;
 import interface_adapter.Product.ProductController;
 import interface_adapter.Product.ProductPresenter;
 import interface_adapter.Product.ProductState;
@@ -23,6 +24,9 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.logout.LogoutViewModel;
+import interface_adapter.make_listing.MakeListingController;
+import interface_adapter.make_listing.MakeListingPresenter;
+import interface_adapter.make_listing.MakeListingViewModel;
 import interface_adapter.manage_address.ManageAddressController;
 import interface_adapter.manage_address.ManageAddressPresenter;
 import interface_adapter.manage_address.ManageAddressState;
@@ -47,6 +51,7 @@ import use_case.filter.FilterOutputBoundary;
 import use_case.homepage.HomepageInteractor;
 import use_case.login.LoginInteractor;
 import use_case.logout.LogoutInteractor;
+import use_case.make_listing.MakeListingInteractor;
 import use_case.manage_address.AddAddressInteractor;
 import use_case.manage_address.DeleteAddressInteractor;
 import use_case.manage_address.EditAddressInteractor;
@@ -71,6 +76,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.CardLayout;
+import java.util.*;
 
 /**
  * App builder with explicit add* methods for views and use cases.
@@ -97,10 +103,11 @@ public class AppBuilder {
     private FilterViewModel filterViewModel =  new FilterViewModel();
     private ProductViewModel productViewModel =  new ProductViewModel();
     private ProductState productState;
-    private AddToCartViewModel addToCartViewModel =   new AddToCartViewModel();
+    private AddToCartViewModel addToCartViewModel = new AddToCartViewModel();
     private ManageAddressViewModel manageAddressViewModel = new ManageAddressViewModel();
     private CheckoutPresenter checkoutPresenter;
     private CheckoutViewModel checkoutViewModel;
+    private MakeListingViewModel makeListingViewModel = new MakeListingViewModel();
 
     // Views
     private LoginView loginView;
@@ -111,6 +118,7 @@ public class AppBuilder {
     private ManageAddressView manageAddressView;
     private SearchView searchView;
     private FilterView filterView;
+    private MakeListingView makeListingView;
 
     // Controllers / interactors shared
     private LoginController loginController;
@@ -125,6 +133,8 @@ public class AppBuilder {
     private OpenProductInteractor openProductInteractor;
     private FilterController filterController;
     private SearchController searchController;
+    private MakeListingController makeListingController;
+    private MakeListingInteractor makeListingInteractor;
 
     private Runnable openManageAddress;
     private Runnable openCart;
@@ -173,7 +183,13 @@ public class AppBuilder {
             System.err.println("[App] No products loaded. Check network/API access.");
             products = java.util.Collections.emptyList();
         }
-        next.setProducts(products);
+        Map<String, List<Object>> mappedProducts = new HashMap<>();
+        for (Product p: products){
+            if (!mappedProducts.containsKey(p.getProductUUID())){
+                mappedProducts.put(p.getProductUUID(), new ArrayList<>(Arrays.asList(p.getName(), p.getImageUrl(), p.getPrice())));
+            }
+        }
+        next.setProducts(mappedProducts);
         homepageViewModel.setState(next);
     }
 
@@ -200,6 +216,13 @@ public class AppBuilder {
         productView.setProductController(productController);
         productView.setAddToCartController(addToCartController);
         cardPanel.add(productView, productView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addMakeListingView() {
+        makeListingViewModel = new MakeListingViewModel();
+        makeListingView = new MakeListingView(makeListingViewModel);
+        cardPanel.add(makeListingView, makeListingView.getViewName());
         return this;
     }
 
@@ -255,9 +278,9 @@ public class AppBuilder {
         HomepagePresenter presenter = new HomepagePresenter(
                 signUpViewModel, viewManagerModel, loginViewModel, homepageViewModel,
                 homepageState, productViewModel, productState,
-                searchViewModel, filterViewModel, logoutViewModel,
+                searchViewModel, filterViewModel, logoutViewModel, makeListingViewModel,
                 openManageAddress, openCart);
-        HomepageInteractor interactor = new HomepageInteractor(presenter);
+        HomepageInteractor interactor = new HomepageInteractor(presenter, dataAccessObject);
         homepageController = new HomepageController(interactor);
         homepageView.setController(homepageController);
         return this;
@@ -345,6 +368,41 @@ public class AppBuilder {
 
         return this;
     }
+    public AppBuilder addMakeListingUseCase() {
+        MakeListingPresenter presenter = new MakeListingPresenter(viewManagerModel, makeListingViewModel, homepageViewModel);
+        makeListingInteractor = new MakeListingInteractor(presenter, dataAccessObject);
+        makeListingController = new MakeListingController(makeListingInteractor);
+        makeListingView.setController(makeListingController);
+        return this;
+    }
+
+//    public AppBuilder addCheckoutUseCase() {
+//        CheckoutOutputBoundary checkoutPresenter = new CheckoutOutputBoundary() {
+//            @Override
+//            public void presentOrderConfirmation(use_case.checkout.CheckoutOutputData outputData) {
+//                SwingUtilities.invokeLater(() -> {
+//                    PaymentWindow window = new PaymentWindow(outputData, dataAccessObject.getUser(outputData.getUsername()));
+//                    window.setVisible(true);
+//                });
+//            }
+//
+//            @Override
+//            public void presentCheckoutError(String errorMessage) {
+//                SwingUtilities.invokeLater(() ->
+//                        JOptionPane.showMessageDialog(null, errorMessage, "Checkout Error", JOptionPane.ERROR_MESSAGE));
+//            }
+//        };
+//        checkoutInteractor = new CheckoutInteractor(dataAccessObject, checkoutPresenter);
+//        openCart = () -> {
+//            String currentUser = dataAccessObject.getCurrentUsername();
+//            if (currentUser == null || currentUser.isEmpty()) {
+//                JOptionPane.showMessageDialog(null, "Please log in to view your cart.", "Not logged in", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//            checkoutInteractor.execute(new CheckoutInputData(currentUser));
+//        };
+//        return this;
+//    }
 
     /* ---------- Build ---------- */
 
