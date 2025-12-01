@@ -495,8 +495,27 @@ public class DataAccessObject implements
 
         @Override
         public void saveOrder(Order order) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'saveOrder'");
+            OkHttpClient client = new OkHttpClient();
+            JSONArray products = new JSONArray();
+            for (Product product : order.getProducts()) {
+                products.put(product.getProductUUID());
+            }
+            JSONObject jsonBody = new JSONObject();
+            try {
+                jsonBody.put("seller_name", order.getUsername());
+                jsonBody.put("products", products);
+                jsonBody.put("price", order.getPrice());
+                jsonBody.put("address", order.getAddress());
+                Request request = new Request.Builder()
+                    .url(URL1 + "/order")
+                    .post(okhttp3.RequestBody.create(jsonBody.toString(), okhttp3.MediaType.parse("application/json")))
+                    .build();
+                client.newCall(request).execute();
+            }
+            catch (IOException e) {
+            }
+            catch (JSONException e) {
+            }
         }
 
         @Override
@@ -530,13 +549,4 @@ public class DataAccessObject implements
             }
             saveUser(user);
         }
-
-//        @Override
-//        public void saveOrder(Order order) {
-//            // Not implemented
-//            return;
-//        }
-
-
-
 }
