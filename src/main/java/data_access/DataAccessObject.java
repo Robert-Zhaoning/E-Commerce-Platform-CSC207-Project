@@ -9,6 +9,7 @@ import use_case.filter.FilterDataAccessInterface;
 import use_case.homepage.AddFundsDataAccessInterface;
 import use_case.manage_address.UserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.make_listing.MakeListingDataAccessInterface;
 import use_case.search.SearchDataAccessInterface;
 import use_case.sign_up.SignUpDataAccessInterface;
 import entity.Address;
@@ -42,7 +43,8 @@ public class DataAccessObject implements
     SearchDataAccessInterface,
     LogoutUserDataAccessInterface,
     SignUpDataAccessInterface, 
-    AddFundsDataAccessInterface {
+    AddFundsDataAccessInterface,
+    MakeListingDataAccessInterface {
 
         private final String URL1 = "https://xlez-ocau-8ty9.n2.xano.io/api:BftqpNiF";
         private final String URL2 = "https://xlez-ocau-8ty9.n2.xano.io/api:vu2PKIfe";
@@ -414,14 +416,18 @@ public class DataAccessObject implements
                 return null;
             }
         }
-
+        
+        @Override
+        public void postListing(Product product) {
+            postProduct(product);
+        }
         public void postProduct(Product product) {
             OkHttpClient client = new OkHttpClient();
             JSONObject jsonBody = new JSONObject();
             try {
                 jsonBody.put("name", product.getName());
                 jsonBody.put("price", product.getPrice());
-                jsonBody.put("image_base64", product.getImageUrl());
+                jsonBody.put("image_base64", product.getimageBase64());
                 jsonBody.put("seller_name", product.getUser().getUsername());
                 jsonBody.put("category", product.getCategory());
                 jsonBody.put("average_review_score", product.getAverageReviewScore());
