@@ -434,7 +434,7 @@ public class DataAccessObject implements
                 jsonBody.put("average_review_score", product.getAverageReviewScore());
                 JSONArray scoresArray = new JSONArray();
                 for (Integer score : product.getScores()) {
-                    scoresArray.put(score);
+                    scoresArray.put(score.intValue());
                 }
                 jsonBody.put("review_scores", scoresArray);
                 Request request = new Request.Builder()
@@ -444,8 +444,10 @@ public class DataAccessObject implements
                 client.newCall(request).execute();
             }
             catch (IOException e) {
+                System.out.println(e.getMessage());
             }
             catch (JSONException e) {
+                System.out.println(e.getMessage());
             }
         }
 
