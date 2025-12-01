@@ -20,6 +20,7 @@ public class Main {
                 .addManageAddressUseCase()
                 .addSearchUseCase()
                 .addFilterUseCase()
+                .addProductUseCase()
                 //.addCheckoutUseCase()
                 .addHomepageUseCase()
                 .addLogoutUseCase()

@@ -119,8 +119,6 @@ public class AppBuilder {
     private Runnable openManageAddress;
     private Runnable openCart;
 
-    private AddToCartViewModel addToCartViewModel;
-
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
@@ -176,20 +174,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addProductView() {
-        productViewModel = new ProductViewModel();
-        addToCartViewModel = new AddToCartViewModel();
-        OpenProductOutputBoundary productPresenter =
-                new ProductPresenter(viewManagerModel, productViewModel, homepageViewModel);
-        AddToCartOutputBoundary addToCartPresenter =
-                new AddToCartPresenter(viewManagerModel, addToCartViewModel);
         productState = new ProductState();
-        openProductInteractor = new OpenProductInteractor(dataAccessObject,productPresenter);
-        addToCartInteractor = new AddToCartInteractor(dataAccessObject,addToCartPresenter,dataAccessObject2);
-        productController = new ProductController(openProductInteractor);
-        addToCartController = new AddToCartController(addToCartInteractor);
         productView = new ProductView(productViewModel, addToCartViewModel);
-        productView.setProductController(productController);
-        productView.setAddToCartController(addToCartController);
         cardPanel.add(productView, productView.getViewName());
         return this;
     }
@@ -306,6 +292,20 @@ public class AppBuilder {
         SearchInputBoundary searchInteractor = new SearchInteractor(searchPresenter, dataAccessObject);
         searchController = new SearchController(searchInteractor);
         searchView.setController(searchController);
+        return this;
+    }
+
+    public AppBuilder addProductUseCase() {
+        OpenProductOutputBoundary productPresenter =
+                new ProductPresenter(viewManagerModel, productViewModel, homepageViewModel);
+        AddToCartOutputBoundary addToCartPresenter =
+                new AddToCartPresenter(viewManagerModel, addToCartViewModel);
+        openProductInteractor = new OpenProductInteractor(dataAccessObject,productPresenter);
+        addToCartInteractor = new AddToCartInteractor(dataAccessObject,addToCartPresenter,dataAccessObject2);
+        productController = new ProductController(openProductInteractor);
+        addToCartController = new AddToCartController(addToCartInteractor);
+        productView.setProductController(productController);
+        productView.setAddToCartController(addToCartController);
         return this;
     }
 
