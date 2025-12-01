@@ -47,8 +47,9 @@ public class ProcessPaymentInteractor implements ProcessPaymentInputBoundary {
             // 6. Clear user's cart after payment
             user.getCart().getProducts().clear();
 
-            // 7. Save updated user 
-            dataAccess.saveUser(user);
+            // 7. Save updated user
+            dataAccess.updateUserBalance(inputData.getUsername(), user.getBalance());
+            dataAccess.updateUserPoints(inputData.getUsername(), user.getPointsBalance());
 
             // 8. Prepare success output
             ProcessPaymentOutputData outputData = new ProcessPaymentOutputData(
