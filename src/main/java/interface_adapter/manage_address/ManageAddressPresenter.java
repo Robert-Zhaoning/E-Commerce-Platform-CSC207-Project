@@ -32,27 +32,17 @@ public class ManageAddressPresenter implements
 
     @Override
     public void prepareFailView(Map<String, String> errors) {
-        ManageAddressState current = viewModel.getState();
-        ManageAddressState next = new ManageAddressState();
-        if (current != null) {
-            next.setUsername(current.getUsername());
-            next.setAddresses(current.getAddresses());
-        }
-        next.setFieldErrors(errors);
-        next.setMessage("Validation errors.");
-        viewModel.setState(next);
+        ManageAddressState state = viewModel.getState();
+        state.setFieldErrors(errors);
+        state.setMessage("Validation errors.");
+        viewModel.setState(state);
     }
 
     @Override
     public void prepareUserNotFoundView(String message) {
-        ManageAddressState current = viewModel.getState();
-        ManageAddressState next = new ManageAddressState();
-        if (current != null) {
-            next.setUsername(current.getUsername());
-            next.setAddresses(current.getAddresses());
-        }
-        next.setMessage(message);
-        viewModel.setState(next);
+        ManageAddressState state = viewModel.getState();
+        state.setMessage(message);
+        viewModel.setState(state);
     }
 
     @Override
@@ -67,14 +57,9 @@ public class ManageAddressPresenter implements
 
     @Override
     public void prepareNotFoundView(String message) {
-        ManageAddressState current = viewModel.getState();
-        ManageAddressState next = new ManageAddressState();
-        if (current != null) {
-            next.setUsername(current.getUsername());
-            next.setAddresses(current.getAddresses());
-        }
-        next.setMessage(message);
-        viewModel.setState(next);
+        ManageAddressState state = viewModel.getState();
+        state.setMessage(message);
+        viewModel.setState(state);
     }
 
     @Override
