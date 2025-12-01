@@ -31,11 +31,11 @@ public class Product {
     }
 
     /* Do not use this constructor to create Products, only for formatting DB data. */
-    public Product(String name, double price, String productUUID, String imageUrl, User seller, String category, double averageReviewScore, ArrayList<Integer> scores) {
+    public Product(String name, double price, String productUUID, String imageBase64, User seller, String category, double averageReviewScore, ArrayList<Integer> scores) {
         this.name = name;
         this.price = price;
         this.productUUID = productUUID;
-        this.imageUrl = imageUrl;
+        this.imageBase64 = imageBase64;
         this.seller = seller;
         this.category = category;
         this.averageReviewScore = averageReviewScore;
