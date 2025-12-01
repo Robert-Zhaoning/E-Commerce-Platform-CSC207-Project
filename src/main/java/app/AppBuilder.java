@@ -129,6 +129,8 @@ public class AppBuilder {
     private Runnable openManageAddress;
     private Runnable openCart;
 
+    //private AddToCartViewModel addToCartViewModel;
+
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
