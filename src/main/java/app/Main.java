@@ -21,7 +21,7 @@ public class Main {
                 .addManageAddressUseCase()
                 .addSearchUseCase()
                 .addFilterUseCase()
-                .addCheckoutUseCase() //uncommented checkoutUseCase
+                .addCheckoutUseCase()
                 .addHomepageUseCase()
                 .addLogoutUseCase()
                 .addMakeListingUseCase()

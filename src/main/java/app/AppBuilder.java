@@ -201,20 +201,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addProductView() {
-        productViewModel = new ProductViewModel();
-        addToCartViewModel = new AddToCartViewModel();
-        OpenProductOutputBoundary productPresenter =
-                new ProductPresenter(viewManagerModel, productViewModel, homepageViewModel);
-        AddToCartOutputBoundary addToCartPresenter =
-                new AddToCartPresenter(viewManagerModel, addToCartViewModel);
         productState = new ProductState();
-        openProductInteractor = new OpenProductInteractor(dataAccessObject,productPresenter);
-        addToCartInteractor = new AddToCartInteractor(dataAccessObject,addToCartPresenter,dataAccessObject2);
-        productController = new ProductController(openProductInteractor);
-        addToCartController = new AddToCartController(addToCartInteractor);
         productView = new ProductView(productViewModel, addToCartViewModel);
-        productView.setProductController(productController);
-        productView.setAddToCartController(addToCartController);
         cardPanel.add(productView, productView.getViewName());
         return this;
     }
