@@ -1,6 +1,5 @@
 package view;
 
-import entity.Product;
 import interface_adapter.homepage.HomepageController;
 import interface_adapter.homepage.HomepageState;
 import interface_adapter.homepage.HomepageViewModel;
@@ -15,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -103,25 +103,25 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
         }
         String searchText = homepageState.getSearchText();
         JLabel searchTextLabel = new JLabel("Current Filter/Search: " + searchText);
-        List<Product> products = homepageState.getProducts();
+        Map<String, List<Object>> products = homepageState.getProducts();
         if (products == null) {
-            products = Collections.emptyList();
+            products = Collections.emptyMap();
         }
         JPanel productShowcasePanel = new JPanel();
         productShowcasePanel.setLayout(new BoxLayout(productShowcasePanel, BoxLayout.Y_AXIS));
         productShowcasePanel.add(searchTextLabel);
-        for  (Product product : products) {
+        for  (String productKey : products.keySet()) {
             JPanel productPanel = new JPanel();
             JLabel imageLabel;
             try {
-                Image original = ImageIO.read(new URL(product.getImageUrl()));
+                Image original = ImageIO.read(new URL((String)products.get(productKey).get(1)));
                 Image scaled = original.getScaledInstance(120, 120, Image.SCALE_SMOOTH);
                 imageLabel = new JLabel(new ImageIcon(scaled));
             } catch (Exception e){
                 imageLabel = new JLabel("No Image");
             }
-            JLabel productLabel = new JLabel(product.getName());
-            JLabel productPriceLabel = new JLabel(Double.toString(product.getPrice()));
+            JLabel productLabel = new JLabel((String)products.get(productKey).get(0));
+            JLabel productPriceLabel = new JLabel("$" + (Double)products.get(productKey).get(2));
             JButton productInfoButton = new JButton("Info");
             productPanel.add(imageLabel);
             productPanel.add(productLabel);
@@ -130,7 +130,7 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
             productShowcasePanel.add(productPanel);
             productInfoButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    homepageController.switchToInfoView(product.getProductUUID(),homepageState.getUsername());
+                    homepageController.switchToInfoView(productKey,homepageState.getUsername());
                 }
             });
         }
@@ -199,7 +199,14 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
         });
         fundButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                homepageController.switchToFundView();
+                double amount;
+                try {
+                    amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to add:"));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Invalid amount entered.");
+                    return;
+                }
+                homepageController.addFunds(homepageState.getUsername(), amount);
             }
         });
         cartButton.addActionListener(new ActionListener() {
@@ -222,4 +229,14 @@ public class HomepageView extends JPanel implements PropertyChangeListener {
     public String getViewName(){
         return this.homepageViewName;
     }
+
+    // public static void main(String[] args) {
+    //     JFrame frame = new JFrame("Homepage View Test");
+    //     HomepageViewModel homepageViewModel = new HomepageViewModel();
+    //     HomepageView homepageView = new HomepageView(homepageViewModel);
+    //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    //     frame.setSize(800, 600);
+    //     frame.add(homepageView);
+    //     frame.setVisible(true);
+    // }
 }
