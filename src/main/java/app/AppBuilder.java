@@ -129,8 +129,6 @@ public class AppBuilder {
     private Runnable openManageAddress;
     private Runnable openCart;
 
-    private AddToCartViewModel addToCartViewModel;
-
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
@@ -271,7 +269,7 @@ public class AppBuilder {
                 homepageState, productViewModel, productState,
                 searchViewModel, filterViewModel, logoutViewModel, makeListingViewModel,
                 openManageAddress, openCart);
-        HomepageInteractor interactor = new HomepageInteractor(presenter);
+        HomepageInteractor interactor = new HomepageInteractor(presenter, dataAccessObject);
         homepageController = new HomepageController(interactor);
         homepageView.setController(homepageController);
         return this;
