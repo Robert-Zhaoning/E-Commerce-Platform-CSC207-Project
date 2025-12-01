@@ -58,7 +58,6 @@ import use_case.search.SearchOutputBoundary;
 import use_case.sign_up.SignUpInputBoundary;
 import use_case.sign_up.SignUpInteractor;
 import use_case.sign_up.SignUpOutputBoundary;
-// Add these imports to your existing imports
 import interface_adapter.checkout.CheckoutController;
 import interface_adapter.checkout.CheckoutPresenter;
 import interface_adapter.checkout.CheckoutViewModel;
