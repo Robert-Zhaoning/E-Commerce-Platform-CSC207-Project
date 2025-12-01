@@ -116,17 +116,6 @@ public class User {
         return new ArrayList<>(this.billingAddresses);
     }
 
-    /**
-     * Replaces the user's billing addresses with the provided list.
-     * Used by manage-address flows to persist edits/deletes.
-     */
-    public void setBillingAddresses(List<Address> addresses) {
-        this.billingAddresses.clear();
-        if (addresses != null) {
-            this.billingAddresses.addAll(addresses);
-        }
-    }
-
     public List<String> getPreviousPurchasesCategories(){
         return this.previousPurchasesCategories;
     }
