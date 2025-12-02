@@ -42,8 +42,8 @@ public class SignUpInteractor implements SignUpInputBoundary{
         // if not try to sign up the new user
         } else {
             try {
-                PasswordStrengthChecker.checkStrength(username, email, password);
                 User newUser = new User(username, email, password, billingAddress);
+                PasswordStrengthChecker.checkStrength(username, email, password);
                 dataAccess.createUser(newUser);
                 // Mark this user as logged in right after a successful signup.
                 dataAccess.setCurrentUsername(newUser.getUsername());

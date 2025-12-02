@@ -1,13 +1,19 @@
 package use_case.sign_up;
 
 import data_access.DataAccessObject;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SignUpTest {
-    void successTest(String username, String password, String email, String billingAddress){
+    @Test
+    void successTest(){
+        String username = "Reza" + LocalDateTime.now();
+        String password = "TestMacBookPro2%";
+        String email = "reza@mail.com";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -15,7 +21,7 @@ public class SignUpTest {
             public void updateSuccess(SignUpOutputData signUpOutputData) {
                 assertTrue(signUpOutputData.getUser() != null);
                 assertTrue( signUpOutputData.getError() == null);
-                assertEquals(username, signUpOutputData.getUser());
+                assertEquals(username, signUpOutputData.getUser().getUsername());
             }
 
             @Override
@@ -37,8 +43,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failureUserExistsTest(String username, String password, String email, String billingAddress){
+    @Test
+    void failureUserExistsTest(){
+        String username = "Reza";
+        String password = "TestMacBookPro2%";
+        String email = "reza@mail.com";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -68,8 +78,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failureUsernameEmptyTest(String username, String password, String email, String billingAddress){
+    @Test
+    void failureUsernameEmptyTest(){
+        String username = "";
+        String password = "TestMacBookPro2%";
+        String email = "reza@mail.com";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -99,8 +113,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failurePasswordTest(String username, String password, String email, String billingAddress){
+    @Test
+    void failurePasswordTest(){
+        String username = "Reza" + LocalDateTime.now();
+        String password = "";
+        String email = "reza@mail.com";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -130,8 +148,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failureEmailEmptyTest(String username, String password, String email, String billingAddress){
+    @Test
+    void failureEmailEmptyTest(){
+        String username = "Reza" + LocalDateTime.now();
+        String password = "TestMacBookPro2025%";
+        String email = "";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -161,8 +183,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failureBillingEmptyTest(String username, String password, String email, String billingAddress) {
+    @Test
+    void failureBillingEmptyTest() {
+        String username = "Reza" + LocalDateTime.now();
+        String password = "TestMacBookPro2%";
+        String email = "reza@mail.com";
+        String billingAddress = "";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -192,8 +218,12 @@ public class SignUpTest {
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
     }
-
-    void failurePasswordWeaknessTest(String username, String password, String email, String billingAddress) {
+    @Test
+    void failurePasswordWeaknessTest() {
+        String username = "Reza" + LocalDateTime.now();
+        String password = "TestMacBookpro";
+        String email = "reza@mail.com";
+        String billingAddress = "123 Main Street";
         SignUpInputData signUpInputData = new SignUpInputData(username, password, email, billingAddress);
         SignUpDataAccessInterface signUpDataAccessObject = new DataAccessObject();
         SignUpOutputBoundary signUpOutputBoundary = new SignUpOutputBoundary() {
@@ -222,45 +252,5 @@ public class SignUpTest {
 
         SignUpInputBoundary signUpInputBoundary = new SignUpInteractor(signUpOutputBoundary, signUpDataAccessObject);
         signUpInputBoundary.execute(signUpInputData);
-    }
-
-    public static void main(String[] args) {
-        SignUpTest signUpTest = new SignUpTest();
-        String username = "Reza" + LocalDateTime.now();
-        String password = "TestMacBookPro2025%";
-        String email = "reza@mail.com";
-        String billingAddress = "123 Main Street";
-        signUpTest.successTest(username, password, email, billingAddress);
-        signUpTest.failureUserExistsTest(username, password, email, billingAddress);
-        username = "";
-        password = "TestMacBookPro2025%";
-        email = "reza@mail.com";
-        billingAddress = "123 Main Street";
-        signUpTest.failureUsernameEmptyTest(username, password, email, billingAddress);
-        username = "Reza" + LocalDateTime.now();
-        password = "TestMacBookPro2025%";
-        email = "";
-        billingAddress = "123 Main Street";
-        signUpTest.failureEmailEmptyTest(username, password, email, billingAddress);
-        username = "Reza" + LocalDateTime.now();
-        password = "TestMacBookPro2025%";
-        email = "reza@mail.com";
-        billingAddress = "";
-        signUpTest.failureBillingEmptyTest(username, password, email, billingAddress);
-        username = "Reza" + LocalDateTime.now();
-        password = "TestMacBookpro";
-        email = "reza@mail.com";
-        billingAddress = "123 Main Street";
-        signUpTest.failureBillingEmptyTest(username, password, email, billingAddress);
-        username = "Reza" + LocalDateTime.now();
-        password = "Test";
-        email = "reza@mail.com";
-        billingAddress = "123 Main Street";
-        signUpTest.failureBillingEmptyTest(username, password, email, billingAddress);
-        username = "Reza" + LocalDateTime.now();
-        password = "RezaMacBookPro2025%";
-        email = "reza@mail.com";
-        billingAddress = "123 Main Street";
-        signUpTest.failureBillingEmptyTest(username, password, email, billingAddress);
     }
 }
