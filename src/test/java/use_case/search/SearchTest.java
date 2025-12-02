@@ -1,18 +1,20 @@
 package use_case.search;
 
 import data_access.DataAccessObject;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SearchTest{
-    void successTest(String searchText){
-        SearchInputData searchInputData = new SearchInputData(searchText);
+    @Test
+    void successTest(){
+        SearchInputData searchInputData = new SearchInputData("cheese");
         SearchDataAccessInterface searchDataAccessObject = new DataAccessObject();
         SearchOutputBoundary searchOutputBoundary = new SearchOutputBoundary() {
             @Override
             public void updateSuccess(SearchOutputData searchOutputData) {
                 assertTrue(searchOutputData.getSearchText() != null);
-                assertEquals(searchText, searchOutputData.getSearchText());
+                assertEquals("cheese", searchOutputData.getSearchText());
                 assertTrue(searchOutputData.getError() == null);
                 assertTrue(searchOutputData.getFoundProducts() != null);
             }
@@ -30,9 +32,9 @@ public class SearchTest{
         SearchInputBoundary searchInputBoundary = new SearchInteractor(searchOutputBoundary, searchDataAccessObject);
         searchInputBoundary.execute(searchInputData);
     }
-
-    void failureTest(String searchText){
-        SearchInputData searchInputData = new SearchInputData(searchText);
+    @Test
+    void failureTest(){
+        SearchInputData searchInputData = new SearchInputData("failure");
         SearchDataAccessInterface searchDataAccessObject = new DataAccessObject();
         SearchOutputBoundary searchOutputBoundary = new SearchOutputBoundary() {
             @Override
@@ -55,11 +57,5 @@ public class SearchTest{
         };
         SearchInputBoundary searchInputBoundary = new SearchInteractor(searchOutputBoundary, searchDataAccessObject);
         searchInputBoundary.execute(searchInputData);
-    }
-
-    public static void main(String[] args) {
-        SearchTest searchTest = new SearchTest();
-        searchTest.successTest("cheese");
-        searchTest.failureTest("failure");
     }
 }
