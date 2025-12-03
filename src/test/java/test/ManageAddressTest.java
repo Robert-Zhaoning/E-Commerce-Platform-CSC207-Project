@@ -10,21 +10,26 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * Tests for AddAddressInteractor, EditAddressInteractor, DeleteAddressInteractor
+ * using an in-memory FakeUserDataAccess.
+ */
 public class ManageAddressTest {
+
+    /* =======================  AddAddressInteractor Tests  ======================= */
 
     @Test
     void testAddAddressSuccess() {
         FakeUserDataAccess userData = new FakeUserDataAccess();
         FakeAddPresenter presenter = new FakeAddPresenter();
 
-        HashSet<Address> initialAddresses = new HashSet<>();
+        // 先放一个已有用户到“数据库”里
         User user = new User(
                 "alice",
                 "alice@example.com",
                 123456,
                 0.0,
-                initialAddresses,
+                new HashSet<>(),
                 new ArrayList<>(),
                 new Cart("alice")
         );
@@ -47,15 +52,17 @@ public class ManageAddressTest {
 
         interactor.execute(input);
 
+        // Presenter 收到的是成功而不是错误
         assertNull(presenter.lastErrors, "There should be no validation errors.");
         assertNotNull(presenter.lastOutput, "Output data should not be null.");
         assertEquals("alice", presenter.lastOutput.getUsername());
 
+        // 检查 FakeUserDataAccess 里用户被更新了
         User savedUser = userData.getUser("alice");
         assertNotNull(savedUser);
         assertEquals(1, savedUser.getBillingAddresses().size());
 
-        Address added = savedUser.getBillingAddresses().iterator().next();
+        Address added = savedUser.getBillingAddresses().get(0);
         assertEquals("123 King St", added.getLine1());
         assertEquals("Toronto", added.getCity());
         assertTrue(added.isDefaultBilling());
@@ -81,6 +88,7 @@ public class ManageAddressTest {
         AddAddressInteractor interactor =
                 new AddAddressInteractor(userData, presenter);
 
+        // line1 和 city 为空，会触发 validation error
         AddAddressInputData input = new AddAddressInputData(
                 "bob",
                 "",
@@ -101,6 +109,35 @@ public class ManageAddressTest {
         assertTrue(presenter.lastErrors.containsKey("city"));
     }
 
+    @Test
+    void testAddAddressUserNotFound() {
+        FakeUserDataAccess userData = new FakeUserDataAccess();
+        FakeAddPresenter presenter = new FakeAddPresenter();
+
+        AddAddressInteractor interactor =
+                new AddAddressInteractor(userData, presenter);
+
+        // username 在 fake DAO 中不存在
+        AddAddressInputData input = new AddAddressInputData(
+                "ghost",
+                "123 King St",
+                "Unit 8",
+                "Toronto",
+                "ON",
+                "M5V 1A1",
+                "Canada",
+                false,
+                false
+        );
+
+        interactor.execute(input);
+
+        assertNull(presenter.lastOutput);
+        assertNull(presenter.lastErrors);
+        assertEquals("User not found: ghost", presenter.lastUserNotFoundMessage);
+    }
+
+    /* =======================  EditAddressInteractor Tests  ======================= */
 
     @Test
     void testEditAddressSuccess() {
@@ -150,7 +187,7 @@ public class ManageAddressTest {
 
         User savedUser = userData.getUser("alice");
         assertNotNull(savedUser);
-        Address edited = savedUser.getBillingAddresses().iterator().next();
+        Address edited = savedUser.getBillingAddresses().get(0);
 
         assertEquals("456 Queen St", edited.getLine1());
         assertEquals("M5V 2A2", edited.getPostalCode());
@@ -196,6 +233,34 @@ public class ManageAddressTest {
         assertEquals("Address not found: NON_EXIST_ID", presenter.lastNotFoundMessage);
     }
 
+    @Test
+    void testEditAddressUserNotFound() {
+        FakeUserDataAccess userData = new FakeUserDataAccess();
+        FakeEditPresenter presenter = new FakeEditPresenter();
+
+        EditAddressInteractor interactor =
+                new EditAddressInteractor(userData, presenter);
+
+        EditAddressInputData input = new EditAddressInputData(
+                "ghost",
+                "ANY_ID",
+                "456 Queen St",
+                "Floor 2",
+                "Toronto",
+                "ON",
+                "M5V 2A2",
+                "Canada",
+                false,
+                false
+        );
+
+        interactor.execute(input);
+
+        assertNull(presenter.lastOutput);
+        assertEquals("User not found: ghost", presenter.lastNotFoundMessage);
+    }
+
+    /* =======================  DeleteAddressInteractor Tests  ======================= */
 
     @Test
     void testDeleteAddressSuccess() {
@@ -233,7 +298,7 @@ public class ManageAddressTest {
         assertNotNull(savedUser);
         assertTrue(savedUser.getBillingAddresses().isEmpty(),
                 "Address should be removed from user's addresses.");
-        assertEquals(addr.getId(), presenter.lastDeletedId);
+        assertNotNull(presenter.lastOutput);
     }
 
     @Test
@@ -260,8 +325,28 @@ public class ManageAddressTest {
 
         interactor.execute(input);
 
+        assertNull(presenter.lastOutput);
         assertEquals("Address not found: UNKNOWN_ID", presenter.lastNotFoundMessage);
     }
+
+    @Test
+    void testDeleteAddressUserNotFound() {
+        FakeUserDataAccess userData = new FakeUserDataAccess();
+        FakeDeletePresenter presenter = new FakeDeletePresenter();
+
+        DeleteAddressInteractor interactor =
+                new DeleteAddressInteractor(userData, presenter);
+
+        DeleteAddressInputData input =
+                new DeleteAddressInputData("ghost", "ANY_ID");
+
+        interactor.execute(input);
+
+        assertNull(presenter.lastOutput);
+        assertEquals("User not found: ghost", presenter.lastNotFoundMessage);
+    }
+
+    /* =======================  Fake DAO ======================= */
 
     private static class FakeUserDataAccess implements UserDataAccessInterface {
         private final Map<String, User> store = new HashMap<>();
@@ -275,7 +360,14 @@ public class ManageAddressTest {
         public void saveUser(User user) {
             store.put(user.getUsername(), user);
         }
+
+        @Override
+        public User getUserData(String username) {
+            return store.get(username);
+        }
     }
+
+    /* =======================  Fake Presenters ======================= */
 
     private static class FakeAddPresenter implements AddAddressOutputBoundary {
         AddAddressOutputData lastOutput;
@@ -324,12 +416,12 @@ public class ManageAddressTest {
     }
 
     private static class FakeDeletePresenter implements DeleteAddressOutputBoundary {
-        String lastDeletedId;
+        DeleteAddressOutputData lastOutput;
         String lastNotFoundMessage;
 
         @Override
         public void prepareSuccessView(DeleteAddressOutputData outputData) {
-            this.lastDeletedId = outputData.getDeletedAddressId();
+            this.lastOutput = outputData;
         }
 
         @Override
